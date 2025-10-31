@@ -1,0 +1,19 @@
+# IDE-specific files and directories
+.claude/
+.cursor/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
