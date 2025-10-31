@@ -13,8 +13,8 @@ Detailed setup instructions for agents-config repository.
 ### 1. Clone Repository
 
 ```bash
-git clone <repo-url> ~/agents-config
-cd ~/agents-config
+git clone <repo-url> ~/.agents-config
+cd ~/.agents-config
 ```
 
 ### 2. Review Changes
@@ -75,10 +75,10 @@ Cursor configuration:
 1. Add file to repository:
    ```bash
    # Add new command
-   cp new-command.md ~/agents-config/commands/
+   cp new-command.md ~/.agents-config/commands/
    
    # Add new agent
-   cp new-agent.md ~/agents-config/agents/
+   cp new-agent.md ~/.agents-config/agents/
    ```
 
 2. Sync to IDEs:
@@ -94,7 +94,7 @@ Cursor configuration:
 
 ## Updating Existing Files
 
-1. Edit files directly in `~/agents-config/`
+1. Edit files directly in `~/.agents-config/`
 2. Changes are immediately available via symlinks
 3. Commit changes:
    ```bash

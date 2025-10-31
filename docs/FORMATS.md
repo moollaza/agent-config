@@ -133,32 +133,30 @@ How to use this agent...
 
 To maintain compatibility between Claude and Cursor:
 
-1. **Primary Storage**: Store all configuration in `agents-config/` repository
-2. **Symlinks**: Create symlinks FROM IDE directories TO repo for shared files
-3. **IDE-Specific**: IDE-specific configs remain in their respective directories
+1. **Primary Storage**: Store all configuration in `.agents-config/` repository
+2. **Symlinks**: Create symlinks from IDE directories to `.agents-config/`
+3. **IDE-Specific**: IDE directories contain only symlinks and IDE-specific files
 
 ### Symlink Structure
 
-**From IDE directories → repo:**
-
 ```
 ~/.claude/
-├── CLAUDE.md -> ~/agents-config/rules/CLAUDE.md
-├── commands -> ~/agents-config/commands/
-└── agents -> ~/agents-config/agents/
+├── CLAUDE.md -> ~/.agents-config/rules/CLAUDE.md
+├── commands -> ~/.agents-config/commands/
+└── agents -> ~/.agents-config/agents/
 
 ~/.cursor/
-├── commands -> ~/agents-config/commands/ (if supported)
-├── agents -> ~/agents-config/agents/ (if supported)
-└── [cursor-specific files: cli-config.json, mcp.json, etc.]
+├── commands -> ~/.agents-config/commands/ (if supported)
+├── agents -> ~/.agents-config/agents/ (if supported)
+└── [cursor-specific files]
 ```
 
 ## Maintenance
 
 Use `sync-to-ides.py` script to:
-- Create/update symlinks from IDE dirs to repo
+- Create/update symlinks from IDE directories to `.agents-config/`
 - Verify symlink integrity
-- Sync new files automatically
+- Preserve IDE-specific files when syncing
 - Report configuration status
 
 ## Differences & Notes
@@ -183,11 +181,11 @@ Use `sync-to-ides.py` script to:
 
 ## Best Practices
 
-1. **Keep rules in `agents-config/rules/CLAUDE.md`** - Single source of truth
-2. **Use symlinks** - IDE dirs symlink to repo, avoiding duplication
-3. **Edit in repo only** - Never edit files directly in IDE directories
+1. **Keep rules in `.agents-config/rules/CLAUDE.md`** - Single source of truth
+2. **Use symlinks** - Avoid duplication, maintain consistency
+3. **Edit only in repo** - Never edit files directly in IDE directories
 4. **Document additions** - Update this file when adding new formats
 5. **Test both IDEs** - Verify changes work in both Claude and Cursor
-6. **Version control** - Keep `agents-config/` repo in git for portability
+6. **Version control** - Keep `.agents-config/` repo in git for portability
 
 

@@ -20,13 +20,23 @@ SYNC_MAPPINGS = [
 ]
 
 HOME = Path.home()
-REPO_DIR = Path.home() / 'agents-config'
+REPO_DIR = Path.home() / '.agents-config'
 CLAUDE_DIR = HOME / '.claude'
 CURSOR_DIR = HOME / '.cursor'
 
+# Files/directories to preserve in IDE directories (Claude-specific)
+CLAUDE_IGNORE = {
+    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins', 
+    'projects', 'shell-snapshots', 'statsig', 'statusline-command.sh', 
+    'todos', 'session-env', 'settings.json'
+}
+
 
 def create_symlink(source, target, force=False, dry_run=False):
-    """Create symlink from source to target, handling existing links/files"""
+    """Create symlink from source to target, handling existing links/files.
+    
+    Preserves IDE-specific files when removing directories in .claude.
+    """
     source = Path(source)
     target = Path(target)
     
@@ -64,9 +74,23 @@ def create_symlink(source, target, force=False, dry_run=False):
             return False
         print(f"  ♻ Removing existing file/directory: {target}")
         if target.is_dir():
-            # Can't use rmdir on non-empty dirs, need to handle differently
+            # For directories, preserve any IDE-specific files that might be inside
+            # (though commands/agents shouldn't have IDE-specific files)
             import shutil
+            preserve_items = []
+            for item in target.iterdir():
+                if item.name in CLAUDE_IGNORE:
+                    preserve_items.append((item, target.parent / item.name))
+                    print(f"    Preserving IDE file: {item.name}")
+            
+            # Remove directory
             shutil.rmtree(target)
+            
+            # Restore preserved files to parent directory
+            for src, dst in preserve_items:
+                if src.exists():  # Double-check it still exists
+                    import shutil
+                    shutil.move(str(src), str(dst))
         else:
             target.unlink()
     

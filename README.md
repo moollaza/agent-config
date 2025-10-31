@@ -15,8 +15,8 @@ Files are synced to IDE directories via symlinks, ensuring consistency and preve
 
 ```bash
 # Clone the repository
-git clone <repo-url> ~/agents-config
-cd ~/agents-config
+git clone <repo-url> ~/.agents-config
+cd ~/.agents-config
 
 # Sync to IDE directories (dry-run first)
 python3 sync-to-ides.py --dry-run
@@ -31,7 +31,7 @@ python3 sync-to-ides.py
 ## Structure
 
 ```
-agents-config/
+.agents-config/
 ├── rules/           # Assistant rules (Claude uses CLAUDE.md)
 ├── commands/        # Command definitions
 ├── agents/          # Agent definitions
@@ -44,13 +44,13 @@ agents-config/
 The `sync-to-ides.py` script creates symlinks from IDE directories to this repo:
 
 **Claude Code:**
-- `~/.claude/CLAUDE.md` → `~/agents-config/rules/CLAUDE.md`
-- `~/.claude/commands/` → `~/agents-config/commands/`
-- `~/.claude/agents/` → `~/agents-config/agents/`
+- `~/.claude/CLAUDE.md` → `~/.agents-config/rules/CLAUDE.md`
+- `~/.claude/commands/` → `~/.agents-config/commands/`
+- `~/.claude/agents/` → `~/.agents-config/agents/`
 
 **Cursor IDE:**
-- `~/.cursor/commands/` → `~/agents-config/commands/` (if supported)
-- `~/.cursor/agents/` → `~/agents-config/agents/` (if supported)
+- `~/.cursor/commands/` → `~/.agents-config/commands/` (if supported)
+- `~/.cursor/agents/` → `~/.agents-config/agents/` (if supported)
 
 ## Usage
 
