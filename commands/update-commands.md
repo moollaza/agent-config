@@ -66,6 +66,10 @@ Do NOT sync these (CI, Linear, HumanLayer-specific, or variants):
 3. Transform content (remove HL-specific, keep agents)
 
    - Remove YAML frontmatter if present (a leading `---` block ending with `\n---\n`).
+   - Transform directory references:
+     - Replace `thoughts/` → `agent-docs/` (all directory paths)
+     - Replace `thoughts-locator` → `agent-docs-locator`
+     - Replace `thoughts-analyzer` → `agent-docs-analyzer`
    - Remove lines or sections that are HumanLayer-specific:
      - Any reference to `hack/spec_metadata.sh`
      - Any reference to `humanlayer thoughts sync`
@@ -73,7 +77,7 @@ Do NOT sync these (CI, Linear, HumanLayer-specific, or variants):
      - Remove the "Path handling" bullet block and the "Frontmatter consistency" bullet block if present
    - Keep references to HumanLayer agents and parallel sub-agents guidance (do NOT remove these):
      - codebase-locator, codebase-analyzer, codebase-pattern-finder
-     - thoughts-locator, thoughts-analyzer (optional to use if a local notes dir exists)
+     - agent-docs-locator, agent-docs-analyzer (optional to use if a local notes dir exists)
      - web-search-researcher (only if explicitly needed)
      - linear-ticket-reader, linear-searcher (if relevant)
 
@@ -136,7 +140,7 @@ Do NOT sync these (CI, Linear, HumanLayer-specific, or variants):
 ```
 
    **`create_handoff.md` → `handoff.md`:**
-   - Replace `thoughts/shared/handoffs/ENG-XXXX/` paths with `docs/ai/handoffs/`
+   - Replace `agent-docs/shared/handoffs/ENG-XXXX/` paths with `docs/ai/handoffs/`
    - Remove references to `scripts/spec_metadata.sh`
    - Simplify frontmatter requirements (remove YAML requirement)
    

@@ -89,6 +89,13 @@ def transform_content(content, filename):
     
     content = '\n'.join(filtered_lines)
     
+    # Transform thoughts/ directory references to agent-docs/
+    content = re.sub(r'thoughts/', 'agent-docs/', content)
+    
+    # Replace agent names (these are separate because they don't have trailing slash)
+    content = re.sub(r'thoughts-locator', 'agent-docs-locator', content)
+    content = re.sub(r'thoughts-analyzer', 'agent-docs-analyzer', content)
+    
     # Special handling for research_codebase.md
     if filename == 'research_codebase.md':
         # Remove metadata gathering step
@@ -202,8 +209,11 @@ def transform_content(content, filename):
     
     # Handle create_handoff.md
     if filename == 'create_handoff.md':
+        # Transform handoff paths (handle both original thoughts/ and transformed agent-docs/)
         content = re.sub(r'thoughts/shared/handoffs/ENG-XXXX/', 'docs/ai/handoffs/', content)
         content = re.sub(r'thoughts/shared/handoffs/', 'docs/ai/handoffs/', content)
+        content = re.sub(r'agent-docs/shared/handoffs/ENG-XXXX/', 'docs/ai/handoffs/', content)
+        content = re.sub(r'agent-docs/shared/handoffs/', 'docs/ai/handoffs/', content)
         content = re.sub(r'\s*- Run the `scripts/spec_metadata.sh`.+\n', '', content)
         content = re.sub(r'Structure the document with YAML frontmatter followed by content:', 'Use the following template structure:', content)
     
