@@ -207,6 +207,14 @@ def transform_content(content, filename):
             flags=re.DOTALL
         )
     
+    # Handle create_plan.md
+    if filename == 'create_plan.md':
+        # Remove sync step references (no longer needed)
+        content = re.sub(r'\s*\*\*Sync the agent-docs directory\*\*:.*?\n\s*- This ensures.*?\n\s*\n', '', content, flags=re.DOTALL)
+        content = re.sub(r'\s*1\. \*\*Sync the agent-docs directory\*\*:.*?\n\s*- This ensures.*?\n\s*\n\s*2\.', '1.', content, flags=re.DOTALL)
+        # Rename "Sync and Review" to just "Review" if sync step was removed
+        content = re.sub(r'### Step \d+: Sync and Review', '### Step 5: Review', content)
+    
     # Handle create_handoff.md
     if filename == 'create_handoff.md':
         # Transform handoff paths (handle both original thoughts/ and transformed agent-docs/)
