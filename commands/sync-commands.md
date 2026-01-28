@@ -1,6 +1,6 @@
 # Sync Commands from Upstream
 
-Sync commands from humanlayer upstream and audit changes for local convention compliance.
+Sync commands from humanlayer upstream, audit changes, and ensure local convention compliance.
 
 ## Process
 
@@ -14,52 +14,62 @@ git pull origin main
 python3 scripts/sync-humanlayer-commands.py --apply --yes
 ```
 
-### Step 3: Audit changes for local conventions
+The script automatically applies known transformations (command names, directory references).
 
-After syncing, check for issues that need fixing:
+### Step 3: Audit the changes
 
-1. **Command references** - Ensure command names match local files:
-   - `/resume-handoff` NOT `/resume_handoff`
-   - `/validate-plan` NOT `/validate_plan`
-   - `/plan` NOT `/create_plan` or `/implementation_plan`
-   - `/implement` NOT `/implement_plan`
+After syncing, carefully review what changed:
 
-   Check with:
+```bash
+git diff --stat
+git diff
+```
+
+**For each changed file, analyze:**
+
+1. **What changed upstream?** - Summarize the key changes (new sections, removed content, modified behavior)
+
+2. **Are there potential issues?** Look for:
+   - New command references that might not exist locally
+   - New agent names or subagent types we don't have
+   - References to humanlayer-specific tools, scripts, or paths
+   - Workflow changes that might not fit our setup
+   - New dependencies or integrations
+
+3. **Convention compliance** - Verify no issues slipped through:
    ```bash
-   grep -n "resume_handoff\|validate_plan\|create_plan\|implement_plan" commands/*.md | grep -v "sync-commands\|update-commands"
+   grep -n "resume_handoff\|validate_plan\|create_plan\|implement_plan\|research_codebase\|create_handoff" commands/*.md | grep -v "sync-commands\|update-commands"
+   grep -n "thoughts/" commands/*.md | grep -v update-commands.md
    ```
 
-2. **Directory references** - This repo uses `agent-docs/` not `thoughts/`:
-   - `agent-docs/` NOT `thoughts/`
-   - `agent-docs-locator` NOT `thoughts-locator`
-   - `agent-docs-analyzer` NOT `thoughts-analyzer`
+### Step 4: Report findings
 
-   Check with:
-   ```bash
-   grep -n "thoughts" commands/*.md | grep -v update-commands.md
-   ```
-   Note: `update-commands.md` legitimately references `thoughts` in its transformation rules.
+Present a summary to the user:
 
-3. **Path references** - Ensure paths match local structure:
-   - Plans: `agent-docs/shared/plans/`
-   - Tickets: `agent-docs/*/tickets/`
+```
+## Sync Summary
 
-### Step 4: Fix any issues found
+### Files Updated
+- [list files and brief description of changes]
 
-Use Edit tool to fix any convention violations found in Step 3.
+### Potential Issues Found
+- [issue 1]: [description and suggested fix]
+- [issue 2]: [description and suggested fix]
 
-### Step 5: Review and commit
+### Recommended Actions
+1. [action to take]
+2. [action to take]
+```
 
-1. Check what changed:
-   ```bash
-   git diff --stat
-   git diff
-   ```
+### Step 5: Fix issues and commit
 
-2. If changes look good, commit:
+1. Fix any issues identified in the audit
+2. Commit the changes:
    ```bash
    git add commands/*.md
-   git commit -m "Sync commands from humanlayer upstream"
+   git commit -m "Sync commands from humanlayer upstream
+
+   [Brief description of key changes]"
    ```
 
 ## Local Conventions Reference
@@ -70,8 +80,23 @@ Use Edit tool to fix any convention violations found in Step 3.
 | `thoughts-locator` | `agent-docs-locator` |
 | `thoughts-analyzer` | `agent-docs-analyzer` |
 | `/resume_handoff` | `/resume-handoff` |
+| `/validate_plan` | `/validate-plan` |
 | `/create_plan` | `/plan` |
 | `/implementation_plan` | `/plan` |
+| `/implement_plan` | `/implement` |
+| `/research_codebase` | `/research` |
+| `/create_handoff` | `/handoff` |
+
+## Things to Watch For
+
+When auditing upstream changes, pay special attention to:
+
+- **New slash commands** - Do we have the corresponding command file?
+- **New agent types** - Are they defined in our agents/ directory?
+- **Linear/CI references** - We don't use these, should be removed
+- **Absolute paths** - Should use relative or configurable paths
+- **Make targets** - Verify they exist or adapt to our setup
+- **Sync commands** - References to `humanlayer thoughts sync` should be removed
 
 ## When to Run
 

@@ -44,11 +44,28 @@ def remove_yaml_frontmatter(content):
     return content
 
 
+def apply_local_conventions(content):
+    """Apply local naming conventions after all other transforms"""
+    # Command name fixes (upstream uses underscores, we use dashes)
+    content = re.sub(r'/resume_handoff\b', '/resume-handoff', content)
+    content = re.sub(r'/validate_plan\b', '/validate-plan', content)
+    content = re.sub(r'/quick_fix\b', '/quick-fix', content)
+
+    # Command name fixes (upstream uses different names)
+    content = re.sub(r'/create_plan\b', '/plan', content)
+    content = re.sub(r'/implementation_plan\b', '/plan', content)
+    content = re.sub(r'/implement_plan\b', '/implement', content)
+    content = re.sub(r'/research_codebase\b', '/research', content)
+    content = re.sub(r'/create_handoff\b', '/handoff', content)
+
+    return content
+
+
 def transform_content(content, filename):
     """Transform content by removing HL-specific details"""
     # Remove YAML frontmatter
     content = remove_yaml_frontmatter(content)
-    
+
     # Remove lines with specific HL references
     lines = content.split('\n')
     filtered_lines = []
@@ -225,6 +242,9 @@ def transform_content(content, filename):
         content = re.sub(r'\s*- Run the `scripts/spec_metadata.sh`.+\n', '', content)
         content = re.sub(r'Structure the document with YAML frontmatter followed by content:', 'Use the following template structure:', content)
     
+    # Apply local naming conventions as final step
+    content = apply_local_conventions(content)
+
     return content.strip() + '\n'
 
 
