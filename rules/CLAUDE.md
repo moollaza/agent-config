@@ -20,3 +20,8 @@
 
 - **Create todo plan first** - Always make a plan with todos and get approval before starting work
 - **Ask when unclear** - Never make assumptions. Always ask clarifying questions when anything is unclear
+
+## Repository Maintenance
+
+- **Sync commands from upstream** - Use `/sync-commands` to pull latest from humanlayer and audit changes
+- **Local conventions** - This repo uses `agent-docs/` (not `thoughts/`) and dashes in command names (not underscores)

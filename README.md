@@ -79,6 +79,22 @@ python3 sync-to-ides.py --verify
 3. Commit changes to git
 4. Pull updates on other machines
 
+## Syncing Commands from Upstream
+
+Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. To update:
+
+```bash
+# Pull latest and run sync
+git pull origin main
+python3 scripts/sync-humanlayer-commands.py --apply --yes
+```
+
+After syncing, audit for local convention compliance:
+- Command names use dashes: `/resume-handoff` not `/resume_handoff`
+- Directory references use `agent-docs/` not `thoughts/`
+
+See `/sync-commands` for the full process.
+
 ## IDE-Specific Notes
 
 ### Claude Code
