@@ -22,8 +22,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with a ticket file directly: `/create_plan agent-docs/allison/tickets/eng_1234.md`
-For deeper analysis, try: `/create_plan think deeply about agent-docs/allison/tickets/eng_1234.md`
+Tip: You can also invoke this command with a ticket file directly: `/plan agent-docs/allison/tickets/eng_1234.md`
+For deeper analysis, try: `/plan think deeply about agent-docs/allison/tickets/eng_1234.md`
 ```
 
 Then wait for the user's input.
@@ -428,7 +428,7 @@ tasks = [
 ## Example Interaction Flow
 
 ```
-User: /create_plan
+User: /plan
 Assistant: I'll help you create a detailed implementation plan...
 
 User: We need to add parent-child tracking for Claude sub-tasks. See agent-docs/allison/tickets/eng_1478.md
