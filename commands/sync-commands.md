@@ -18,13 +18,15 @@ python3 scripts/sync-humanlayer-commands.py --apply --yes
 
 After syncing, check for issues that need fixing:
 
-1. **Command references** - Ensure command names use dashes not underscores:
+1. **Command references** - Ensure command names match local files:
    - `/resume-handoff` NOT `/resume_handoff`
    - `/validate-plan` NOT `/validate_plan`
+   - `/plan` NOT `/create_plan` or `/implementation_plan`
+   - `/implement` NOT `/implement_plan`
 
    Check with:
    ```bash
-   grep -n "resume_handoff\|validate_plan" commands/*.md
+   grep -n "resume_handoff\|validate_plan\|create_plan\|implement_plan" commands/*.md | grep -v "sync-commands\|update-commands"
    ```
 
 2. **Directory references** - This repo uses `agent-docs/` not `thoughts/`:
