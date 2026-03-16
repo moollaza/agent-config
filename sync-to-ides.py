@@ -20,7 +20,7 @@ SYNC_MAPPINGS = [
 ]
 
 HOME = Path.home()
-REPO_DIR = Path.home() / '.agents-config'
+REPO_DIR = Path(__file__).resolve().parent
 CLAUDE_DIR = HOME / '.claude'
 CURSOR_DIR = HOME / '.cursor'
 
