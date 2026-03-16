@@ -45,25 +45,24 @@ def create_symlink(source, target, force=False, dry_run=False):
         return False
     
     if dry_run:
-        if target.exists():
-            if target.is_symlink():
-                current_target = target.readlink()
-                if current_target.resolve() == source.resolve():
-                    print(f"  ✓ Already linked: {target} -> {source}")
-                    return True
-                else:
-                    print(f"  ♻ Would update: {target} -> {source} (currently -> {current_target})")
+        if target.is_symlink():
+            current_target = target.readlink()
+            if target.exists() and current_target.resolve() == source.resolve():
+                print(f"  ✓ Already linked: {target} -> {source}")
+                return True
             else:
-                print(f"  ⚠ Would overwrite: {target} (use --force)")
-                return False
+                print(f"  ♻ Would update: {target} -> {source} (currently -> {current_target})")
+        elif target.exists():
+            print(f"  ⚠ Would overwrite: {target} (use --force)")
+            return False
         else:
             print(f"  ✓ Would create: {target} -> {source}")
             return True
-    
-    # If target exists and is already correct symlink, skip
-    if target.exists() and target.is_symlink():
+
+    # Handle existing symlinks (including broken ones)
+    if target.is_symlink():
         current_target = target.readlink()
-        if current_target.resolve() == source.resolve():
+        if target.exists() and current_target.resolve() == source.resolve():
             return True
         print(f"  ♻ Removing existing symlink: {target}")
         target.unlink()
