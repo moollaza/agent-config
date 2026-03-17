@@ -17,17 +17,32 @@ SYNC_MAPPINGS = [
     ('rules/CLAUDE.md', '.claude/CLAUDE.md', None, False),  # Cursor doesn't use CLAUDE.md
     ('commands', '.claude/commands', '.cursor/commands', True),  # TBD - needs verification
     ('agents', '.claude/agents', '.cursor/agents', True),  # TBD - needs verification
+    ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None, False),  # Claude Code status line
+    # Skills are added dynamically below — each subdir of skills/ gets its own symlink
+    # so we don't clobber existing skills in ~/.claude/skills/ (e.g. marketing skills)
 ]
 
 HOME = Path.home()
 REPO_DIR = Path.home() / '.agents-config'
+
+
+def _discover_skills(repo_dir):
+    """Auto-discover skill directories and add them to SYNC_MAPPINGS."""
+    skills_dir = repo_dir / 'skills'
+    if not skills_dir.is_dir():
+        return
+    for child in sorted(skills_dir.iterdir()):
+        if child.is_dir() and not child.name.startswith('.'):
+            SYNC_MAPPINGS.append(
+                (f'skills/{child.name}', f'.claude/skills/{child.name}', None, False)
+            )
 CLAUDE_DIR = HOME / '.claude'
 CURSOR_DIR = HOME / '.cursor'
 
 # Files/directories to preserve in IDE directories (Claude-specific)
 CLAUDE_IGNORE = {
-    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins', 
-    'projects', 'shell-snapshots', 'statsig', 'statusline-command.sh', 
+    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins',
+    'projects', 'shell-snapshots', 'statsig',
     'todos', 'session-env', 'settings.json'
 }
 
@@ -168,7 +183,10 @@ def main():
     if not REPO_DIR.exists():
         print(f"Error: Repository directory does not exist: {REPO_DIR}")
         sys.exit(1)
-    
+
+    # Discover skills subdirectories and add to mappings
+    _discover_skills(REPO_DIR)
+
     # Ensure IDE directories exist
     CLAUDE_DIR.mkdir(exist_ok=True)
     CURSOR_DIR.mkdir(exist_ok=True)
