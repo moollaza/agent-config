@@ -81,19 +81,7 @@ python3 sync-to-ides.py --verify
 
 ## Syncing Commands from Upstream
 
-Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. To update:
-
-```bash
-# Pull latest and run sync
-git pull origin main
-python3 scripts/sync-humanlayer-commands.py --apply --yes
-```
-
-After syncing, audit for local convention compliance:
-- Command names use dashes: `/resume-handoff` not `/resume_handoff`
-- Directory references use `agent-docs/` not `thoughts/`
-
-See `/sync-commands` for the full process.
+Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. Use the `sync-commands` skill which runs the bundled transform script and audits for convention compliance.
 
 ## IDE-Specific Notes
 

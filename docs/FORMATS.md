@@ -19,7 +19,9 @@ Claude uses the `.claude` directory in the user's home directory (`~/.claude/`) 
 │   ├── code-analyzer.md
 │   └── ...
 ├── settings.json           # IDE settings
-└── sync-humanlayer-commands.py  # Utility scripts
+└── skills/                # Bundled skills with assets
+    ├── sync-commands/     # Upstream command sync
+    └── ralph-loop/        # Autonomous dev loops
 ```
 
 **Key Files:**

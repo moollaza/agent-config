@@ -23,5 +23,5 @@
 
 ## Repository Maintenance
 
-- **Sync commands from upstream** - Use `/sync-commands` to pull latest from humanlayer and audit changes
+- **Sync commands from upstream** - Use the `sync-commands` skill to pull latest from humanlayer and audit changes
 - **Local conventions** - This repo uses `agent-docs/` (not `thoughts/`) and dashes in command names (not underscores)
