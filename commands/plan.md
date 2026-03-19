@@ -273,10 +273,7 @@ After structure approval:
 
 ### Step 5: Review
 
-1. **Sync the agent-docs directory**:
-   - This ensures the plan is properly indexed and available
-
-2. **Present the draft plan location**:
+1. **Present the draft plan location**:
    ```
    I've created the initial implementation plan at:
    `agent-docs/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`

@@ -25,10 +25,11 @@ COMMAND_MAPPING = {
 # Commands to exclude (CI, Linear, HumanLayer-specific)
 EXCLUDED_COMMANDS = {
     'ci_commit.md', 'ci_describe_pr.md', 'commit.md', 'describe_pr.md',
-    'linear.md', 'create_worktree.md', 'debug.md', 'founder_mode.md',
-    'oneshot.md', 'oneshot_plan.md', 'ralph_impl.md', 'ralph_plan.md',
-    'ralph_research.md', 'research_codebase_generic.md', 'research_codebase_nt.md',
-    'create_plan_generic.md', 'create_plan_nt.md', 'local_review.md',
+    'describe_pr_nt.md', 'linear.md', 'create_worktree.md', 'debug.md',
+    'founder_mode.md', 'oneshot.md', 'oneshot_plan.md', 'ralph_impl.md',
+    'ralph_plan.md', 'ralph_research.md', 'research_codebase_generic.md',
+    'research_codebase_nt.md', 'create_plan_generic.md', 'create_plan_nt.md',
+    'iterate_plan.md', 'iterate_plan_nt.md', 'local_review.md',
 }
 
 GITHUB_API_BASE = 'https://api.github.com/repos/humanlayer/humanlayer/contents/.claude/commands?ref=main'
@@ -106,10 +107,12 @@ def transform_content(content, filename):
     
     content = '\n'.join(filtered_lines)
     
-    # Transform thoughts/ directory references to agent-docs/
-    content = re.sub(r'thoughts/', 'agent-docs/', content)
-    
-    # Replace agent names (these are separate because they don't have trailing slash)
+    # Transform thoughts directory references to agent-docs
+    # Handle both "thoughts/" (with slash) and standalone "thoughts" (e.g. "thoughts directory")
+    content = re.sub(r'\bthoughts/', 'agent-docs/', content)
+    content = re.sub(r'\bthoughts\b(?!-)', 'agent-docs', content)
+
+    # Replace agent names (these use a hyphen, so won't match the above)
     content = re.sub(r'thoughts-locator', 'agent-docs-locator', content)
     content = re.sub(r'thoughts-analyzer', 'agent-docs-analyzer', content)
     
@@ -226,9 +229,8 @@ def transform_content(content, filename):
     
     # Handle create_plan.md
     if filename == 'create_plan.md':
-        # Remove sync step references (no longer needed)
-        content = re.sub(r'\s*\*\*Sync the agent-docs directory\*\*:.*?\n\s*- This ensures.*?\n\s*\n', '', content, flags=re.DOTALL)
-        content = re.sub(r'\s*1\. \*\*Sync the agent-docs directory\*\*:.*?\n\s*- This ensures.*?\n\s*\n\s*2\.', '1.', content, flags=re.DOTALL)
+        # Remove sync step and renumber (upstream has "1. Sync..." then "2. Present...")
+        content = re.sub(r'\d+\.\s*\*\*Sync the agent-docs directory\*\*:.*?\n\s*- This ensures.*?\n\s*\n\s*(\d+\.)', r'1.', content, flags=re.DOTALL)
         # Rename "Sync and Review" to just "Review" if sync step was removed
         content = re.sub(r'### Step \d+: Sync and Review', '### Step 5: Review', content)
     
