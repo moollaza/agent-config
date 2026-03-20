@@ -1,6 +1,6 @@
 ---
 name: sync-commands
-description: Use when the user wants to sync commands from upstream, update commands from humanlayer, pull latest commands, sync upstream commands, or fix outdated commands. Triggers on phrases like "sync commands," "update commands," "pull latest from humanlayer," "sync upstream," or "commands are outdated."
+description: Fetches latest commands from humanlayer/humanlayer upstream repo, transforms them to remove HumanLayer-specific content, applies local conventions (thoughts->agent-docs, underscores->dashes), and audits for regressions. Use this skill whenever the user mentions syncing, updating, pulling, or refreshing commands from upstream or humanlayer. Also use when commands feel stale or outdated, when the user wants to check what changed upstream, when they mention "humanlayer" in the context of commands, or when they want to audit commands for convention compliance (thoughts/ references, underscore names). Even casual requests like "update to latest humanlayer stuff," "pull latest commands," "our commands feel old," "check if humanlayer added anything new," or "refresh from upstream" should trigger this skill. When in doubt about whether the user wants to sync commands, use this skill — it starts with a dry-run so there's no risk.
 ---
 
 # Sync Commands from Upstream

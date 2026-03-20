@@ -1,0 +1,47 @@
+{
+  "skill_name": "sync-commands",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Verify transform output has no HumanLayer-specific content (thoughts/, humanlayer thoughts sync, hack/spec, scripts/spec, frontmatter)",
+      "expected_output": "All transformed files should have zero forbidden patterns",
+      "assertions": [
+        {"text": "No 'thoughts/' directory references in any transformed file", "type": "forbidden_pattern", "pattern": "thoughts/"},
+        {"text": "No standalone 'thoughts' word (excluding 'agent-docs' context) in any transformed file", "type": "forbidden_pattern", "pattern": "\\bthoughts\\b"},
+        {"text": "No 'humanlayer thoughts sync' references", "type": "forbidden_pattern", "pattern": "humanlayer thoughts sync"},
+        {"text": "No 'hack/spec' references", "type": "forbidden_pattern", "pattern": "hack/spec"},
+        {"text": "No 'scripts/spec_metadata' references", "type": "forbidden_pattern", "pattern": "scripts/spec_metadata"},
+        {"text": "No 'thoughts/searchable/' references", "type": "forbidden_pattern", "pattern": "thoughts/searchable/"},
+        {"text": "No YAML frontmatter (--- blocks) in transformed files", "type": "forbidden_pattern", "pattern": "^---$"}
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Verify local conventions are applied: agent-docs, dashed command names, correct paths",
+      "expected_output": "All convention replacements should be present where expected",
+      "assertions": [
+        {"text": "Uses 'agent-docs/' instead of 'thoughts/'", "type": "required_pattern", "pattern": "agent-docs/"},
+        {"text": "Uses 'agent-docs-locator' instead of 'thoughts-locator'", "type": "required_pattern_if_present", "pattern": "agent-docs-locator"},
+        {"text": "Uses 'agent-docs-analyzer' instead of 'thoughts-analyzer'", "type": "required_pattern_if_present", "pattern": "agent-docs-analyzer"},
+        {"text": "Uses '/resume-handoff' not '/resume_handoff'", "type": "forbidden_pattern", "pattern": "/resume_handoff"},
+        {"text": "Uses '/validate-plan' not '/validate_plan'", "type": "forbidden_pattern", "pattern": "/validate_plan"},
+        {"text": "Uses '/plan' not '/create_plan'", "type": "forbidden_pattern", "pattern": "/create_plan"},
+        {"text": "Uses '/implement' not '/implement_plan'", "type": "forbidden_pattern", "pattern": "/implement_plan"},
+        {"text": "Uses '/research' not '/research_codebase'", "type": "forbidden_pattern", "pattern": "/research_codebase"},
+        {"text": "Uses '/handoff' not '/create_handoff'", "type": "forbidden_pattern", "pattern": "/create_handoff"},
+        {"text": "Uses '/quick-fix' not '/quick_fix'", "type": "forbidden_pattern", "pattern": "/quick_fix"}
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Verify no new upstream files are unaccounted for (not in COMMAND_MAPPING or EXCLUDED_COMMANDS)",
+      "expected_output": "Every upstream .md file should be in either COMMAND_MAPPING or EXCLUDED_COMMANDS",
+      "assertions": [
+        {"text": "All upstream files are accounted for in mapping or exclusion list", "type": "coverage_check"}
+      ],
+      "files": []
+    }
+  ]
+}
