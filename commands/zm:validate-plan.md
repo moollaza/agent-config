@@ -152,9 +152,9 @@ Always verify:
 ## Relationship to Other Commands
 
 Recommended workflow:
-1. `/implement` - Execute the implementation
+1. `/zm:implement` - Execute the implementation
 2. `/commit` - Create atomic commits for changes
-3. `/validate-plan` - Verify implementation correctness
+3. `/zm:validate-plan` - Verify implementation correctness
 4. `/describe_pr` - Generate PR description
 
 The validation works best after commits are made, as it can analyze the git history to understand what was implemented.
