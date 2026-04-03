@@ -287,7 +287,40 @@ When the user approves, kill the server and proceed to implementation:
 kill %1 2>/dev/null
 ```
 
-The approved mockups serve as the design spec.
+The approved mockups serve as the design spec — but only if you actually read
+them. See Phase 9.
+
+### Phase 9: Implementation Handoff
+
+The mockup HTML files are the source of truth for what was approved. Before
+writing any production code, you **must** re-read the approved mockup source
+files to extract the exact design details.
+
+**Step 1: Read every approved mockup file.** Use the Read tool on each `.html`
+file in `.mockups/`. Do not rely on memory or screenshots — read the actual
+HTML source.
+
+**Step 2: Extract the design spec.** From the mockup source, pull out:
+
+- **Structure:** The DOM hierarchy — what wraps what, flex/grid layout
+  decisions, container nesting
+- **Classes:** The exact Tailwind classes used for each element — spacing,
+  colors, typography, border-radius, shadows
+- **Tokens:** Any project-specific tokens from the `tailwind.config` block
+- **Content:** Labels, placeholder text, button copy, headings
+- **Interactive states:** What changes on hover, click, expand/collapse
+- **Responsive behavior:** How the layout adapts across breakpoints
+
+**Step 3: Implement from the spec, not from vibes.** When writing the real
+components, reference the mockup source directly. If the mockup uses
+`gap-4 p-6 rounded-xl border border-gray-200` on a card, the production card
+should use those same classes (or the project's equivalent component). Don't
+approximate — match.
+
+**If a different agent handles implementation:** When handing off to another
+agent or conversation, explicitly state that the `.mockups/` directory contains
+approved HTML mockups and the implementing agent must read them before writing
+code. Include the file paths in the handoff.
 
 ## Tips
 
