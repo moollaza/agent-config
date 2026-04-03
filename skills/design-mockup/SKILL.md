@@ -140,6 +140,17 @@ CDN with the extracted project tokens.
 - **Use stable filenames.** `active-healthy.html`, `setup-step-1.html`,
   `option-a-compact.html`. These persist across iterations so browser refresh
   shows the update.
+- **Match responsive behavior, not just width.** Mockups at mobile/tablet
+  breakpoints must reflect the real app's responsive changes — not just the
+  desktop layout in a narrow container. Extract the project's actual responsive
+  patterns:
+  - **Navigation:** If the app uses a hamburger menu, bottom nav, or drawer at
+    mobile widths, the mockup must show that — not the desktop nav bar.
+  - **Font sizes:** Extract the project's responsive typography scale (e.g.,
+    `text-2xl md:text-4xl` for headings) and apply it. Don't use desktop font
+    sizes at mobile widths.
+  - **Layout shifts:** Sidebar-to-stacked, grid column changes, hidden elements
+    — mirror what the real app does at each breakpoint.
 
 ### Phase 4: Choose the Right Viewer Layout
 
@@ -170,6 +181,12 @@ highlighted.
 
 Include this toggle in EVERY mockup page by default — responsive behavior
 should always be one click away.
+
+**Important:** Each breakpoint must render the real responsive variant, not just
+a resized container. At mobile width, show the mobile nav (hamburger/drawer),
+mobile typography scale, and mobile layout. At tablet, show tablet-specific
+patterns. Read the project's responsive classes and media queries to understand
+what actually changes at each breakpoint.
 
 #### Side-by-Side Options
 
