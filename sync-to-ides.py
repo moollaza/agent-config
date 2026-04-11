@@ -20,6 +20,8 @@ SYNC_MAPPINGS = [
     ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None, False),  # Claude Code status line
     # Skills are added dynamically below — each subdir of skills/ gets its own symlink
     # so we don't clobber existing skills in ~/.claude/skills/ (e.g. marketing skills)
+    # Rules (other than CLAUDE.md) are added dynamically below — each file in rules/
+    # gets its own symlink to ~/.claude/rules/ so we don't clobber existing rules
 ]
 
 HOME = Path.home()
@@ -35,6 +37,18 @@ def _discover_skills(repo_dir):
         if child.is_dir() and not child.name.startswith('.'):
             SYNC_MAPPINGS.append(
                 (f'skills/{child.name}', f'.claude/skills/{child.name}', None, False)
+            )
+
+
+def _discover_rules(repo_dir):
+    """Auto-discover rule files (excluding CLAUDE.md) and add them to SYNC_MAPPINGS."""
+    rules_dir = repo_dir / 'rules'
+    if not rules_dir.is_dir():
+        return
+    for child in sorted(rules_dir.iterdir()):
+        if child.is_file() and child.suffix == '.md' and child.name != 'CLAUDE.md':
+            SYNC_MAPPINGS.append(
+                (f'rules/{child.name}', f'.claude/rules/{child.name}', None, False)
             )
 CLAUDE_DIR = HOME / '.claude'
 CURSOR_DIR = HOME / '.cursor'
@@ -184,8 +198,9 @@ def main():
         print(f"Error: Repository directory does not exist: {REPO_DIR}")
         sys.exit(1)
 
-    # Discover skills subdirectories and add to mappings
+    # Discover skills subdirectories and rules files, add to mappings
     _discover_skills(REPO_DIR)
+    _discover_rules(REPO_DIR)
 
     # Ensure IDE directories exist
     CLAUDE_DIR.mkdir(exist_ok=True)
