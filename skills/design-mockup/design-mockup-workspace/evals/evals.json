@@ -1,0 +1,26 @@
+{
+  "skill_name": "design-mockup",
+  "evals": [
+    {
+      "id": 1,
+      "name": "settings-page-redesign",
+      "prompt": "I'm redesigning the settings page of our app. It currently has 3 states: default view with form fields, editing mode where fields become editable, and a saved confirmation toast. The project uses Next.js + Tailwind CSS. Create mockups so I can review the design before implementing.",
+      "expected_output": "Mockups covering all 3 states with extracted design tokens, served locally with a tabbed viewer and responsive toggle",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "pricing-cards-options",
+      "prompt": "Our pricing page cards are too busy with nested borders everywhere. I want to see 2-3 cleaner options for the pricing card layout. Show me what they could look like at both desktop and mobile widths. The project uses Tailwind.",
+      "expected_output": "Side-by-side options view with rationale cards explaining tradeoffs, plus responsive preview for each option",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "file-upload-errors",
+      "prompt": "We need to design the error states for our file upload component — validation error (wrong file type), network error (upload failed), and file too large. I want to make sure we've covered all the edge cases. This is a React + Tailwind project.",
+      "expected_output": "Coverage-mode mockups showing each error state, with completeness tracking and a11y contrast checks on the error colors",
+      "files": []
+    }
+  ]
+}
