@@ -9,17 +9,7 @@ Query SEO and search performance data from the Google Search Console API.
 
 ## Prerequisites
 
-Install the `searchconsole` Python package (wrapper around the official Google API):
-
-```bash
-pip install searchconsole
-```
-
-If not installed, fall back to `google-api-python-client`:
-
-```bash
-pip install google-api-python-client google-auth google-auth-oauthlib
-```
+No installation needed — all Python commands use `uv run` with inline dependencies. `uv` handles package resolution on the fly.
 
 ## Credential Setup
 
@@ -53,7 +43,7 @@ If no credentials found, guide the user through the simplest path:
 > 6. Save it as `~/.config/gsc/client-secrets.json`
 > 7. Run the auth flow (opens browser once):
 >    ```bash
->    python3 -c "
+>    uv run --with searchconsole python3 -c "
 >    import searchconsole
 >    account = searchconsole.authenticate(
 >        client_config='$HOME/.config/gsc/client-secrets.json',
@@ -74,12 +64,12 @@ If no credentials found, guide the user through the simplest path:
 
 ## Querying with the searchconsole package
 
-The `searchconsole` package provides a fluent Python API. Use `python3 -c` or the bundled helper script.
+The `searchconsole` package provides a fluent Python API. All commands use `uv run` so no pre-installation is needed.
 
 ### List properties
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -92,7 +82,7 @@ for p in account:
 ### Top queries (last 28 days)
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -107,7 +97,7 @@ for row in report.rows:
 ### Top pages
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -122,7 +112,7 @@ for row in report.rows:
 ### Daily trend
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -137,7 +127,7 @@ for row in report.rows:
 ### Filter by query or page
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -152,7 +142,7 @@ for row in report.rows:
 ### By device or country
 
 ```bash
-python3 -c "
+uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -170,7 +160,7 @@ The `searchconsole` package doesn't cover URL Inspection — use the REST API di
 
 ```bash
 # Get access token from saved credentials
-ACCESS_TOKEN=$(python3 -c "
+ACCESS_TOKEN=$(uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -195,7 +185,7 @@ Quota: 2,000 inspections/day per property.
 ## Sitemaps
 
 ```bash
-ACCESS_TOKEN=$(python3 -c "
+ACCESS_TOKEN=$(uv run --with searchconsole python3 -c "
 import searchconsole
 account = searchconsole.authenticate(
     client_config='$HOME/.config/gsc/client-secrets.json',
@@ -217,7 +207,7 @@ curl -s -X PUT "https://searchconsole.googleapis.com/webmasters/v3/sites/ENCODED
 If using a service account instead of OAuth:
 
 ```bash
-python3 -c "
+uv run --with google-api-python-client --with google-auth python3 -c "
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import os
