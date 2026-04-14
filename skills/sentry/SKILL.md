@@ -38,21 +38,17 @@ Start by identifying the organization and project:
 
 ### Searching Issues
 
-`mcp__claude_ai_Sentry__search_issues` — search with Sentry query syntax:
+`mcp__claude_ai_Sentry__search_issues` — takes a `naturalLanguageQuery` parameter. Describe what you're looking for in plain English and the tool translates it to Sentry's search syntax internally.
 
-Common query patterns:
-- `is:unresolved` — all open issues
-- `is:unresolved level:error` — unresolved errors only
-- `is:unresolved !level:info` — unresolved, excluding info level
-- `assigned:me` — assigned to current user
-- `first-seen:-24h` — new issues in last 24 hours
-- `last-seen:-1h` — issues active in last hour
-- `times-seen:>100` — high-frequency issues
-- `release:1.2.3` — issues in a specific release
-- `!has:assignee is:unresolved` — unresolved and unassigned
-- `browser.name:Chrome os.name:iOS` — filter by tags
+Example queries (pass as naturalLanguageQuery):
+- `"unresolved errors from the last 24 hours"`
+- `"critical bugs affecting more than 100 users"`
+- `"unresolved issues assigned to me"`
+- `"new issues since last week"`
+- `"errors in the quickbudget project"`
+- `"unresolved and unassigned issues"`
 
-Combine with sort: `sort:date` (most recent), `sort:freq` (most frequent), `sort:priority` (highest priority).
+The tool also requires `organizationSlug` and optionally `projectSlugOrId` and `regionUrl`.
 
 ### Analyzing Events
 

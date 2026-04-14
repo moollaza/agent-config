@@ -38,10 +38,12 @@ If no credentials found, guide the user through the simplest path:
 > 1. Go to https://console.cloud.google.com/apis/credentials
 > 2. Create a project (or select existing)
 > 3. Enable the "Google Search Console API" under APIs & Services → Library
-> 4. Create an **OAuth 2.0 Client ID** (type: Desktop app)
-> 5. Download the client secrets JSON
-> 6. Save it as `~/.config/gsc/client-secrets.json`
-> 7. Run the auth flow (opens browser once):
+> 4. Go to **OAuth consent screen** → choose **External** → fill in app name + your email → Save
+> 5. Under **Test users**, add your Google email (the app is in Testing mode, so only listed test users can authorize)
+> 6. Go to **Credentials** → Create **OAuth 2.0 Client ID** (type: Desktop app)
+> 7. Download the client secrets JSON
+> 8. Save it: `mkdir -p ~/.config/gsc && mv ~/Downloads/client_secret_*.json ~/.config/gsc/client-secrets.json`
+> 9. Run the auth flow (opens browser once — click through the consent screen):
 >    ```bash
 >    uv run --with searchconsole python3 -c "
 >    import searchconsole
@@ -54,6 +56,7 @@ If no credentials found, guide the user through the simplest path:
 >    ```
 >
 > After this, credentials are saved and refresh automatically — no more browser interaction.
+> Properties use `sc-domain:` format (e.g. `sc-domain:example.com`) — use this when selecting a property.
 
 **Alternative — Service account (fully headless):**
 
