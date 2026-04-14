@@ -30,7 +30,15 @@ When the Sentry MCP tools are available, prefer them over raw API calls. They ha
 
 ### Discovery
 
-Start by identifying the organization and project:
+Check the service registry first to skip API discovery:
+
+```bash
+# Look up by project name
+jq '.projects["quickbudget"].sentry' ~/.claude/service-registry.json
+# Returns: {"org": "moolla-apps", "project": "quickbudget", "region": "https://us.sentry.io"}
+```
+
+If not in the registry, use MCP tools:
 
 1. `mcp__claude_ai_Sentry__whoami` — check current auth identity
 2. `mcp__claude_ai_Sentry__find_organizations` — list accessible orgs

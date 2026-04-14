@@ -34,7 +34,16 @@ FATHOM_API_KEY="${FATHOM_API_KEY:-$(security find-generic-password -s "fathom-ap
 
 ### Step 1: Identify the site
 
-If the user doesn't specify a site ID, list their sites first:
+Check the service registry first to avoid unnecessary API calls:
+
+```bash
+# Look up by project name or domain
+jq '.projects["repo-remover"].fathom' ~/.claude/service-registry.json
+# Or find by domain
+jq '.projects[] | select(.domains[] == "zaahir.ca") | .fathom' ~/.claude/service-registry.json
+```
+
+If the project isn't in the registry, fall back to listing sites:
 
 ```bash
 curl -s "https://api.usefathom.com/v1/sites" \
@@ -42,6 +51,25 @@ curl -s "https://api.usefathom.com/v1/sites" \
 ```
 
 Response is cursor-paginated: `data[]` array with `has_more` boolean. Use `starting_after` for next page.
+
+### Event Tracking and Funnels
+
+The registry includes tracked events per site. Query event conversions to understand funnels:
+
+```bash
+# Get conversion data for a specific event
+curl -s "https://api.usefathom.com/v1/aggregations?entity=event&site_id=SITE_ID&entity_name=EVENT_NAME&aggregates=conversions,unique_conversions,value&date_from=$(date -v-30d +%Y-%m-%d)%2000:00:00" \
+  -H "Authorization: Bearer $FATHOM_API_KEY" | jq
+
+# Get all events for a site
+curl -s "https://api.usefathom.com/v1/sites/SITE_ID/events" \
+  -H "Authorization: Bearer $FATHOM_API_KEY" | jq '.data[] | {id, name}'
+
+# Compare multiple events over time (funnel stages)
+# Run one query per funnel step and compare conversion counts
+```
+
+When the user asks about funnels or conversions, check the registry for known events and query each stage to show drop-off between steps.
 
 ### Step 2: Query analytics
 

@@ -69,7 +69,15 @@ If no credentials found, guide the user through the simplest path:
 
 The `searchconsole` package provides a fluent Python API. All commands use `uv run` so no pre-installation is needed.
 
-### List properties
+### Resolve property from registry (preferred)
+
+```bash
+# Look up by project name
+jq -r '.projects["zaahir-ca"].gsc.property' ~/.claude/service-registry.json
+# Returns: sc-domain:zaahir.ca
+```
+
+### List properties (fallback)
 
 ```bash
 uv run --with searchconsole python3 -c "

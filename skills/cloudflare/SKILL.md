@@ -43,7 +43,12 @@ All REST responses follow the envelope: `{"success": bool, "errors": [], "result
 
 ### Zone Management
 
-**List zones:**
+**Resolve zone from registry (preferred):**
+```bash
+jq '.projects[] | select(.domains[] == "zaahir.ca") | .cloudflare' ~/.claude/service-registry.json
+```
+
+**List zones (fallback):**
 ```bash
 curl -s "https://api.cloudflare.com/client/v4/zones?per_page=50" \
   -H "Authorization: Bearer $CF_TOKEN" | jq '.result[] | {id, name, status, plan: .plan.name}'
