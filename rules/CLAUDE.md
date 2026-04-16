@@ -133,6 +133,10 @@ If stopping due to a blocker, also output in the terminal:
 - Exact next steps (commands + files)
 - Minimal context to resume
 
+## Planning Quality Gate
+
+After completing any implementation plan (`/zm:plan` or similar), suggest running `/grill-me` to stress-test the plan before implementation begins. A grilled plan catches bad assumptions early — implementation rework is expensive.
+
 ## Self-Improvement
 
 - Use the `skill-creator` skill to build new skills when you notice repeated patterns.
