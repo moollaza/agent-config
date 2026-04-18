@@ -94,7 +94,7 @@ If environment supports subagents, actually spawn them. Otherwise, simulate inte
 - **Review latest docs** — check for and review latest documentation before starting work.
 - **Use PR templates** — always use .github PR templates when they exist.
 - **Succinct commits** — short and factual.
-- **Succinct PRs** — describe what changed and why. No marketing language.
+- **PR descriptions** — follow `pr-descriptions.md` (bullet structure, testing + review-focus sections, public-repo safe, no marketing language).
 - **No preambles** — don't narrate what you're about to do. Just do it.
 
 ## Stop Context (REQUIRED before every stop)
