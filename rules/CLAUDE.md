@@ -88,6 +88,21 @@ If environment supports subagents, actually spawn them. Otherwise, simulate inte
 - **Minimize code** — write only what's needed. Reuse existing code when possible.
 - **Cleanup before commit** — after implementation works, simplify and remove excess complexity.
 
+## No silent deletions
+
+When working on a PR, you may only delete files or config blocks that fall into one of three buckets:
+
+1. You created them in this same PR.
+2. The user explicitly told you to remove them.
+3. You flagged the deletion to the user and got a "yes".
+
+Anything else is off-limits, even if it looks dead, unused, stale, or "cleaned up by the new approach." Load-bearing infrastructure (Cloudflare Workers, middleware, redirect rules, `_headers`, CSP, robots, sitemap, CI workflows, dependency declarations) frequently looks dead to an agent that doesn't have production context. Deleting it silently is one of the worst failure modes — the regression is invisible until a crawler, a user, or a week-old dashboard surfaces it.
+
+Before deletion:
+- If ≥3 files outside the stated PR scope would be removed, stop. Confirm with the user.
+- In the PR description, enumerate every deletion with a one-line justification. Never rely on the diff alone to communicate what was removed.
+- If a file has no tests but exists, treat it as load-bearing by default.
+
 ## Communication
 
 - **Be concise** — sacrifice grammar for concision.
@@ -96,6 +111,14 @@ If environment supports subagents, actually spawn them. Otherwise, simulate inte
 - **Succinct commits** — short and factual.
 - **PR descriptions** — follow `pr-descriptions.md` (bullet structure, testing + review-focus sections, public-repo safe, no marketing language).
 - **No preambles** — don't narrate what you're about to do. Just do it.
+
+## PR reviews: Argos visual regressions
+
+When reviewing a PR or returning to one after a push, check its Argos build status (via `gh pr checks <PR>` or the Argos check link in the PR). If the Argos check is failing, pending review, or needs-review, invoke the `argos-pr-review` skill to review the build rather than hand-rolling the review.
+
+- Treat an unresolved Argos failure as part of the Definition of Done for any UI-affecting PR — do not claim the task is done while Argos is red or has unreviewed diffs.
+- Never approve or reject Argos diffs on the user's behalf. Recommend the action; let the user click (Tier 4).
+- If the Argos check is green and all snapshots are stable, note it and move on — no need to run the skill.
 
 ## Stop Context (REQUIRED before every stop)
 
@@ -133,6 +156,18 @@ If stopping due to a blocker, also output in the terminal:
 - Exact next steps (commands + files)
 - Minimal context to resume
 
+## Maintaining global config (source of truth)
+
+Global Claude config lives in `~/projects/agent-config/` (the `moollaza/agent-config` repo). `~/.claude/CLAUDE.md`, `~/.claude/skills/*`, `~/.claude/commands/`, `~/.claude/agents/`, and `~/.claude/rules/*` are **symlinks** into that repo — never edit them directly.
+
+To add or modify a rule, skill, command, or agent:
+
+1. Edit the file under `~/projects/agent-config/` (e.g. new skill → create `~/projects/agent-config/skills/<name>/SKILL.md`).
+2. Run: `python3 ~/projects/agent-config/sync-to-ides.py --repo-dir ~/projects/agent-config` — this (re)creates any missing symlinks in `~/.claude/`. Safe to re-run; idempotent.
+3. Commit the change in the `~/projects/agent-config` repo and open a PR if working on a branch.
+
+If you see a file at `~/.claude/<path>` that is not a symlink and you just created it, move it into `~/projects/agent-config/<path>` and re-run the sync script. A plain file at `~/.claude/` is a drift bug.
+
 ## Self-Improvement
 
 - Use the `skill-creator` skill to build new skills when you notice repeated patterns.
@@ -146,3 +181,15 @@ If stopping due to a blocker, also output in the terminal:
 - Structure: `Projects/` for project-specific notes, `Daily/` for daily notes, `Templates/` for reusable templates.
 - Check relevant Obsidian notes at the start of work on known projects.
 - Use Obsidian wiki-link syntax `[[Note Name]]` and tags in frontmatter.
+
+## UI Feedback: look for adjacent issues
+
+When the user reports a UI bug or UX problem, before fixing just the reported
+issue, spend 60 seconds scanning the same component/flow for adjacent problems
+of the same class. Examples:
+
+- Bug report: "modal too tall" → check: no dismiss button? bad contrast? mobile broken?
+- Bug report: "button not visible enough" → check: accessible on mobile? keyboard? right aria-label?
+
+Report the adjacent issues and fix them in the same change. Don't make the user
+report each one separately.
