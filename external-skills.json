@@ -1,0 +1,11 @@
+{
+  "$comment": "Skills installed from upstream sources at setup time. Run scripts/install-external-skills.sh to install into ~/.claude/skills/. Fresh-from-source: we never vendor, so these stay current with upstream.",
+  "version": 1,
+  "skills": [
+    {
+      "source": "argos-ci/argos-javascript",
+      "skills": ["argos-cli", "argos-pr-review"],
+      "note": "Official Argos CLI + PR review skills. https://argos-ci.com/docs/review-builds-with-ai-agents"
+    }
+  ]
+}

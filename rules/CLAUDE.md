@@ -114,7 +114,7 @@ Before deletion:
 
 ## PR reviews: Argos visual regressions
 
-When reviewing a PR or returning to one after a push, check its Argos build status (via `gh pr checks <PR>` or the Argos check link in the PR). If the Argos check is failing, pending review, or `changes-detected`, invoke the `argos-pr-review` skill — the official skill vendored from [argos-ci/argos-javascript](https://github.com/argos-ci/argos-javascript/tree/main/skills/argos-pr-review). The companion `argos-cli` skill provides CLI + auth details; both live under `skills/` in this repo.
+When reviewing a PR or returning to one after a push, check its Argos build status (via `gh pr checks <PR>` or the Argos check link in the PR). If the Argos check is failing, pending review, or `changes-detected`, invoke the `argos-pr-review` skill — the official skill from [argos-ci/argos-javascript](https://github.com/argos-ci/argos-javascript/tree/main/skills/argos-pr-review), installed fresh via `external-skills.json` (no vendoring). The companion `argos-cli` skill provides CLI + auth details.
 
 - Treat an unresolved Argos failure as part of the Definition of Done for any UI-affecting PR — do not claim the task is done while Argos is red or has unreviewed diffs.
 - Follow the skill's own guidance verbatim (it's upstream-authored). Do not roll your own Argos review flow.
@@ -159,15 +159,20 @@ If stopping due to a blocker, also output in the terminal:
 
 ## Maintaining global config (source of truth)
 
-Global Claude config lives in `~/projects/agent-config/` (the `moollaza/agent-config` repo). `~/.claude/CLAUDE.md`, `~/.claude/skills/*`, `~/.claude/commands/`, `~/.claude/agents/`, and `~/.claude/rules/*` are **symlinks** into that repo — never edit them directly.
+Global Claude config lives in `~/projects/agent-config/` (the `moollaza/agent-config` repo). Two classes of content:
 
-To add or modify a rule, skill, command, or agent:
+1. **Authored here** — rules, commands, agents, and skills we write ourselves. These live under `~/projects/agent-config/{rules,commands,agents,skills}/` and are **symlinked** into `~/.claude/` by `sync-to-ides.py`. Never edit the `~/.claude/` path directly.
+2. **External skills** — skills maintained by upstream projects (e.g. Argos). These are listed in `~/projects/agent-config/external-skills.json` and installed fresh from source via `scripts/install-external-skills.sh`. They land at `~/.claude/skills/<name>/` as real directories, not symlinks. Never vendor — the manifest + fresh install keeps them current.
 
-1. Edit the file under `~/projects/agent-config/` (e.g. new skill → create `~/projects/agent-config/skills/<name>/SKILL.md`).
-2. Run: `python3 ~/projects/agent-config/sync-to-ides.py --repo-dir ~/projects/agent-config` — this (re)creates any missing symlinks in `~/.claude/`. Safe to re-run; idempotent.
-3. Commit the change in the `~/projects/agent-config` repo and open a PR if working on a branch.
+To add or modify:
 
-If you see a file at `~/.claude/<path>` that is not a symlink and you just created it, move it into `~/projects/agent-config/<path>` and re-run the sync script. A plain file at `~/.claude/` is a drift bug.
+- **Authored rule/skill/command/agent** — edit under `~/projects/agent-config/`, then run `python3 ~/projects/agent-config/sync-to-ides.py`. Idempotent.
+- **Add an external skill** — append an entry to `external-skills.json`, run `./scripts/install-external-skills.sh`. To refresh, re-run the script (or `npx skills update -g`).
+- **Remove an external skill** — delete it from `external-skills.json`, then `rm -rf ~/.claude/skills/<name>`.
+
+Then commit the change in the repo and open a PR if working on a branch.
+
+If you see a plain file at `~/.claude/<path>` that isn't in either class, it's drift — move it into the repo (authored) or add it to `external-skills.json` (external) and re-run the appropriate script.
 
 ## Self-Improvement
 
