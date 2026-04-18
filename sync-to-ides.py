@@ -25,7 +25,9 @@ SYNC_MAPPINGS = [
 ]
 
 HOME = Path.home()
-REPO_DIR = Path.home() / '.agents-config'
+# Default to the directory this script lives in, so running the script from its
+# repo location just works regardless of where the user cloned it.
+REPO_DIR = Path(__file__).resolve().parent
 
 
 def _discover_skills(repo_dir):
