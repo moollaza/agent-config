@@ -114,9 +114,10 @@ Before deletion:
 
 ## PR reviews: Argos visual regressions
 
-When reviewing a PR or returning to one after a push, check its Argos build status (via `gh pr checks <PR>` or the Argos check link in the PR). If the Argos check is failing, pending review, or needs-review, invoke the `argos-pr-review` skill to review the build rather than hand-rolling the review.
+When reviewing a PR or returning to one after a push, check its Argos build status (via `gh pr checks <PR>` or the Argos check link in the PR). If the Argos check is failing, pending review, or `changes-detected`, invoke the `argos-pr-review` skill — the official skill vendored from [argos-ci/argos-javascript](https://github.com/argos-ci/argos-javascript/tree/main/skills/argos-pr-review). The companion `argos-cli` skill provides CLI + auth details; both live under `skills/` in this repo.
 
 - Treat an unresolved Argos failure as part of the Definition of Done for any UI-affecting PR — do not claim the task is done while Argos is red or has unreviewed diffs.
+- Follow the skill's own guidance verbatim (it's upstream-authored). Do not roll your own Argos review flow.
 - Never approve or reject Argos diffs on the user's behalf. Recommend the action; let the user click (Tier 4).
 - If the Argos check is green and all snapshots are stable, note it and move on — no need to run the skill.
 
