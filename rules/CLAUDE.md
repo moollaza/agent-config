@@ -161,9 +161,9 @@ If stopping due to a blocker, also output in the terminal:
 
 Global Claude config lives in `~/projects/agent-config/`. Authored rules, commands, agents, and skills live there and are **symlinked** into `~/.claude/` by `sync-to-ides.py` — never edit the `~/.claude/` paths directly.
 
-External skills from upstream projects are listed in `EXTERNAL_SKILLS.md` at the repo root, with copy-pasteable install + verify commands. Run them to install; re-run to refresh from source.
+External skills/plugins from upstream projects are listed in `plugins.json` at the repo root — each entry has an `install` command that runs fresh from source. `setup.sh` installs them all; re-run any entry's `install` command to refresh.
 
-Workflow: edit the repo → run `sync-to-ides.py` (authored) or the relevant install command from `EXTERNAL_SKILLS.md` (external) → commit.
+Workflow: edit the repo → run `sync-to-ides.py` (authored) or re-run the `install` command from `plugins.json` (external) → commit.
 
 ## Self-Improvement
 

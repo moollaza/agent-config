@@ -1,12 +1,24 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "description": "External Claude Code plugins to install. These are NOT stored in the repo — only tracked here so setup is reproducible.",
+  "description": "External Claude Code plugins to install. These are NOT stored in the repo \u2014 only tracked here so setup is reproducible.",
   "plugins": [
     {
       "name": "obsidian-skills",
       "source": "kepano/obsidian-skills",
       "description": "Obsidian Flavored Markdown, Bases, JSON Canvas, CLI, and Defuddle skills by Steph Ango (Obsidian CEO)",
       "install": "npx skills add git@github.com:kepano/obsidian-skills.git"
+    },
+    {
+      "name": "argos-cli",
+      "source": "argos-ci/argos-javascript",
+      "description": "Operate the Argos visual regression CLI (official skill from argos-ci)",
+      "install": "npx skills add argos-ci/argos-javascript -g -a claude-code -s argos-cli -y"
+    },
+    {
+      "name": "argos-pr-review",
+      "source": "argos-ci/argos-javascript",
+      "description": "Review Argos visual regression builds on PRs (official skill from argos-ci)",
+      "install": "npx skills add argos-ci/argos-javascript -g -a claude-code -s argos-pr-review -y"
     }
   ]
 }
