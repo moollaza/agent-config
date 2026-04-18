@@ -26,9 +26,6 @@ echo ""
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     python3 sync-to-ides.py
     echo ""
-    echo "Installing external skills from external-skills.json..."
-    ./scripts/install-external-skills.sh
-    echo ""
     echo "Setup complete!"
     echo ""
     echo "To verify symlinks:"

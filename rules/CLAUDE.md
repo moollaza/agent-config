@@ -159,20 +159,11 @@ If stopping due to a blocker, also output in the terminal:
 
 ## Maintaining global config (source of truth)
 
-Global Claude config lives in `~/projects/agent-config/` (the `moollaza/agent-config` repo). Two classes of content:
+Global Claude config lives in `~/projects/agent-config/`. Authored rules, commands, agents, and skills live there and are **symlinked** into `~/.claude/` by `sync-to-ides.py` — never edit the `~/.claude/` paths directly.
 
-1. **Authored here** — rules, commands, agents, and skills we write ourselves. These live under `~/projects/agent-config/{rules,commands,agents,skills}/` and are **symlinked** into `~/.claude/` by `sync-to-ides.py`. Never edit the `~/.claude/` path directly.
-2. **External skills** — skills maintained by upstream projects (e.g. Argos). These are listed in `~/projects/agent-config/external-skills.json` and installed fresh from source via `scripts/install-external-skills.sh`. They land at `~/.claude/skills/<name>/` as real directories, not symlinks. Never vendor — the manifest + fresh install keeps them current.
+External skills from upstream projects are listed in `EXTERNAL_SKILLS.md` at the repo root, with copy-pasteable install + verify commands. Run them to install; re-run to refresh from source.
 
-To add or modify:
-
-- **Authored rule/skill/command/agent** — edit under `~/projects/agent-config/`, then run `python3 ~/projects/agent-config/sync-to-ides.py`. Idempotent.
-- **Add an external skill** — append an entry to `external-skills.json`, run `./scripts/install-external-skills.sh`. To refresh, re-run the script (or `npx skills update -g`).
-- **Remove an external skill** — delete it from `external-skills.json`, then `rm -rf ~/.claude/skills/<name>`.
-
-Then commit the change in the repo and open a PR if working on a branch.
-
-If you see a plain file at `~/.claude/<path>` that isn't in either class, it's drift — move it into the repo (authored) or add it to `external-skills.json` (external) and re-run the appropriate script.
+Workflow: edit the repo → run `sync-to-ides.py` (authored) or the relevant install command from `EXTERNAL_SKILLS.md` (external) → commit.
 
 ## Self-Improvement
 
