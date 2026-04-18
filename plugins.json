@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "External Claude Code plugins to install. These are NOT stored in the repo — only tracked here so setup is reproducible.",
+  "plugins": [
+    {
+      "name": "obsidian-skills",
+      "source": "kepano/obsidian-skills",
+      "description": "Obsidian Flavored Markdown, Bases, JSON Canvas, CLI, and Defuddle skills by Steph Ango (Obsidian CEO)",
+      "install": "npx skills add git@github.com:kepano/obsidian-skills.git"
+    }
+  ]
+}
