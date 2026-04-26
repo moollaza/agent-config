@@ -1,0 +1,82 @@
+[
+  {
+    "query": "how do we update this to latest copy of humanlayer stuff",
+    "should_trigger": true
+  },
+  {
+    "query": "our research command feels kinda stale, can we pull latest from the humanlayer repo and see what changed",
+    "should_trigger": true
+  },
+  {
+    "query": "sync upstream commands please. i think they added some new stuff to the plan command recently",
+    "should_trigger": true
+  },
+  {
+    "query": "i want to check if humanlayer has updated any of the commands we forked from them - can you pull their latest and show me what's different?",
+    "should_trigger": true
+  },
+  {
+    "query": "the implement command doesnt seem to have the latest improvements from humanlayer. lets update all our commands from their repo",
+    "should_trigger": true
+  },
+  {
+    "query": "run the sync to grab the latest commands and make sure we havent missed any new patterns they added upstream",
+    "should_trigger": true
+  },
+  {
+    "query": "we should do our periodic command refresh from humanlayer main, havent done it in a while",
+    "should_trigger": true
+  },
+  {
+    "query": "can you check if there are new commands in the humanlayer repo we should be pulling in? last time we found iterate_plan was missing",
+    "should_trigger": true
+  },
+  {
+    "query": "lets update our commands. also audit them for any thoughts/ references that might have slipped through",
+    "should_trigger": true
+  },
+  {
+    "query": "i want to create a new slash command for running database migrations. it should check for pending migrations, show a preview, then apply",
+    "should_trigger": false
+  },
+  {
+    "query": "can you look at the /plan command and help me understand how the research phase works? i want to know what agents it spawns",
+    "should_trigger": false
+  },
+  {
+    "query": "the /implement command is failing when it tries to spawn sub-agents. can you debug why it cant find the codebase-analyzer agent?",
+    "should_trigger": false
+  },
+  {
+    "query": "i want to build a skill that helps with code review. something that checks for common patterns and suggests improvements",
+    "should_trigger": false
+  },
+  {
+    "query": "can you refactor the transform.py script to use async fetching? its kinda slow fetching files one at a time",
+    "should_trigger": false
+  },
+  {
+    "query": "we need to update our CLAUDE.md rules to be stricter about test coverage. add a rule that says 80% minimum",
+    "should_trigger": false
+  },
+  {
+    "query": "help me set up a ralph loop for the frontend rewrite. i have specs ready in the specs/ directory",
+    "should_trigger": false
+  },
+  {
+    "query": "what commands do we have available in this repo? can you list them all with descriptions",
+    "should_trigger": false
+  },
+  {
+    "query": "i pushed some changes to the handoff command locally. can you review the diff and make sure it looks good before i commit?",
+    "should_trigger": false
+  },
+  {
+    "query": "our agent-docs directory is getting messy. can you help organize the research documents by date?",
+    "should_trigger": false
+  },
+  {
+    "query": "i want to add a new agent definition for a typescript-analyzer that can find type errors across the project",
+    "should_trigger": false
+  }
+]

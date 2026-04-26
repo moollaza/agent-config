@@ -273,10 +273,7 @@ After structure approval:
 
 ### Step 5: Review
 
-1. **Sync the agent-docs directory**:
-   - This ensures the plan is properly indexed and available
-
-2. **Present the draft plan location**:
+1. **Present the draft plan location**:
    ```
    I've created the initial implementation plan at:
    `agent-docs/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
@@ -428,7 +425,7 @@ tasks = [
 ## Example Interaction Flow
 
 ```
-User: /plan
+User: /zm:plan
 Assistant: I'll help you create a detailed implementation plan...
 
 User: We need to add parent-child tracking for Claude sub-tasks. See agent-docs/allison/tickets/eng_1478.md

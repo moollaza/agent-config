@@ -17,17 +17,48 @@ SYNC_MAPPINGS = [
     ('rules/CLAUDE.md', '.claude/CLAUDE.md', None, False),  # Cursor doesn't use CLAUDE.md
     ('commands', '.claude/commands', '.cursor/commands', True),  # TBD - needs verification
     ('agents', '.claude/agents', '.cursor/agents', True),  # TBD - needs verification
+    ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None, False),  # Claude Code status line
+    # Skills are added dynamically below — each subdir of skills/ gets its own symlink
+    # so we don't clobber existing skills in ~/.claude/skills/ (e.g. marketing skills)
+    # Rules (other than CLAUDE.md) are added dynamically below — each file in rules/
+    # gets its own symlink to ~/.claude/rules/ so we don't clobber existing rules
 ]
 
 HOME = Path.home()
-REPO_DIR = Path.home() / '.agents-config'
+# Default to the directory this script lives in, so running the script from its
+# repo location just works regardless of where the user cloned it.
+REPO_DIR = Path(__file__).resolve().parent
+
+
+def _discover_skills(repo_dir):
+    """Auto-discover skill directories and add them to SYNC_MAPPINGS."""
+    skills_dir = repo_dir / 'skills'
+    if not skills_dir.is_dir():
+        return
+    for child in sorted(skills_dir.iterdir()):
+        if child.is_dir() and not child.name.startswith('.'):
+            SYNC_MAPPINGS.append(
+                (f'skills/{child.name}', f'.claude/skills/{child.name}', None, False)
+            )
+
+
+def _discover_rules(repo_dir):
+    """Auto-discover rule files (excluding CLAUDE.md) and add them to SYNC_MAPPINGS."""
+    rules_dir = repo_dir / 'rules'
+    if not rules_dir.is_dir():
+        return
+    for child in sorted(rules_dir.iterdir()):
+        if child.is_file() and child.suffix == '.md' and child.name != 'CLAUDE.md':
+            SYNC_MAPPINGS.append(
+                (f'rules/{child.name}', f'.claude/rules/{child.name}', None, False)
+            )
 CLAUDE_DIR = HOME / '.claude'
 CURSOR_DIR = HOME / '.cursor'
 
 # Files/directories to preserve in IDE directories (Claude-specific)
 CLAUDE_IGNORE = {
-    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins', 
-    'projects', 'shell-snapshots', 'statsig', 'statusline-command.sh', 
+    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins',
+    'projects', 'shell-snapshots', 'statsig',
     'todos', 'session-env', 'settings.json'
 }
 
@@ -168,7 +199,11 @@ def main():
     if not REPO_DIR.exists():
         print(f"Error: Repository directory does not exist: {REPO_DIR}")
         sys.exit(1)
-    
+
+    # Discover skills subdirectories and rules files, add to mappings
+    _discover_skills(REPO_DIR)
+    _discover_rules(REPO_DIR)
+
     # Ensure IDE directories exist
     CLAUDE_DIR.mkdir(exist_ok=True)
     CURSOR_DIR.mkdir(exist_ok=True)

@@ -68,7 +68,7 @@ Once this is completed, you should respond to the user with the template between
 Handoff created and synced! You can resume from this handoff in a new session with the following command:
 
 ```bash
-/resume-handoff path/to/handoff.md
+/zm:resume-handoff path/to/handoff.md
 ```
 </template_response>
 
@@ -78,7 +78,7 @@ for example (between <example_response></example_response> XML tags - do NOT inc
 Handoff created and synced! You can resume from this handoff in a new session with the following command:
 
 ```bash
-/resume-handoff docs/ai/handoffs/ENG-2166/2025-01-08_13-44-55_ENG-2166_create-context-compaction.md
+/zm:resume-handoff docs/ai/handoffs/ENG-2166/2025-01-08_13-44-55_ENG-2166_create-context-compaction.md
 ```
 </example_response>
 

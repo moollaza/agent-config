@@ -1,0 +1,95 @@
+{
+  "eval_results": {
+    "eval_1_forbidden_patterns": [
+      {
+        "text": "No 'thoughts/' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'standalone 'thoughts'' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'humanlayer thoughts sync' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'hack/spec' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'scripts/spec_metadata' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'thoughts/searchable/' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      },
+      {
+        "text": "No 'YAML frontmatter at file start' references in transformed files",
+        "passed": true,
+        "evidence": "No matches found"
+      }
+    ],
+    "eval_2_conventions": [
+      {
+        "text": "Uses 'agent-docs/' directory references",
+        "passed": true,
+        "evidence": "Found agent-docs/ references in transformed output"
+      },
+      {
+        "text": "Uses '/resume-handoff' not '/resume_handoff'",
+        "passed": true,
+        "evidence": "Correctly uses '/resume-handoff'"
+      },
+      {
+        "text": "Uses '/validate-plan' not '/validate_plan'",
+        "passed": true,
+        "evidence": "Correctly uses '/validate-plan'"
+      },
+      {
+        "text": "Uses '/plan' not '/create_plan'",
+        "passed": true,
+        "evidence": "Correctly uses '/plan'"
+      },
+      {
+        "text": "Uses '/implement' not '/implement_plan'",
+        "passed": true,
+        "evidence": "Correctly uses '/implement'"
+      },
+      {
+        "text": "Uses '/research' not '/research_codebase'",
+        "passed": true,
+        "evidence": "Correctly uses '/research'"
+      },
+      {
+        "text": "Uses '/handoff' not '/create_handoff'",
+        "passed": true,
+        "evidence": "Correctly uses '/handoff'"
+      },
+      {
+        "text": "Uses '/quick-fix' not '/quick_fix'",
+        "passed": true,
+        "evidence": "Correctly uses '/quick-fix'"
+      }
+    ],
+    "eval_3_coverage": [
+      {
+        "text": "All upstream files accounted for",
+        "passed": true,
+        "evidence": "All 27 upstream files are in COMMAND_MAPPING (6) or EXCLUDED_COMMANDS (21)"
+      }
+    ]
+  },
+  "summary": {
+    "passed": 16,
+    "total": 16,
+    "failed": 0
+  }
+}

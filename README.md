@@ -35,6 +35,8 @@ python3 sync-to-ides.py
 ├── rules/           # Assistant rules (Claude uses CLAUDE.md)
 ├── commands/        # Command definitions
 ├── agents/          # Agent definitions
+├── skills/          # Local skills (synced via symlinks)
+├── plugins.json     # External plugin registry (installed, not stored)
 ├── docs/            # Documentation
 └── scripts/         # Utility scripts
 ```
@@ -81,19 +83,17 @@ python3 sync-to-ides.py --verify
 
 ## Syncing Commands from Upstream
 
-Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. To update:
+Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. Use the `sync-commands` skill which runs the bundled transform script and audits for convention compliance.
 
-```bash
-# Pull latest and run sync
-git pull origin main
-python3 scripts/sync-humanlayer-commands.py --apply --yes
-```
+## External Plugins
 
-After syncing, audit for local convention compliance:
-- Command names use dashes: `/resume-handoff` not `/resume_handoff`
-- Directory references use `agent-docs/` not `thoughts/`
+External plugins are tracked in `plugins.json` but **not stored in this repo**. This keeps the repo lean while making setup reproducible.
 
-See `/sync-commands` for the full process.
+- `plugins.json` — registry of plugins to install (name, source, install command)
+- `setup.sh` — installs them interactively during setup
+- Plugins live in `~/.claude/plugins/` (managed by Claude Code)
+
+To add a plugin, add an entry to `plugins.json` and re-run `./setup.sh`.
 
 ## IDE-Specific Notes
 
