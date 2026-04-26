@@ -88,6 +88,17 @@ If environment supports subagents, actually spawn them. Otherwise, simulate inte
 - **Minimize code** — write only what's needed. Reuse existing code when possible.
 - **Cleanup before commit** — after implementation works, simplify and remove excess complexity.
 
+## Debugging
+
+- **Don't dismiss user-reported bugs** — if the user says something is broken, investigate deeper. Playwright passing doesn't mean production behavior is correct. Never say "works for me" based on automated tests alone.
+- **Confirm understanding before acting** — before proposing a solution, confirm you understand the actual request. Don't suggest alternative approaches the user didn't ask for. When the user picks a direction, follow it without debating.
+- **Bounded loops only** — scripts and automated loops MUST have a completion/exit condition and a maximum iteration cap. Never run unbounded loops.
+
+## CI/CD
+
+- **Check before changing** — before making CI/build changes, verify: 1) lock files present and committed, 2) env var names match between local and deploy platform, 3) dependency compatibility. Commit lock files with every dependency change.
+- **Lock files are required** — Cloudflare Workers builds and most CI need the lock file (`bun.lock`, `pnpm-lock.yaml`, `package-lock.json`) committed. Never `.gitignore` them.
+
 ## No silent deletions
 
 When working on a PR, you may only delete files or config blocks that fall into one of three buckets:
