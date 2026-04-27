@@ -25,7 +25,7 @@ SYNC_MAPPINGS = [
 ]
 
 HOME = Path.home()
-REPO_DIR = Path.home() / '.agents-config'
+REPO_DIR = Path(__file__).resolve().parent
 
 
 def _discover_skills(repo_dir):
@@ -260,4 +260,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-

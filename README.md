@@ -15,8 +15,8 @@ Files are synced to IDE directories via symlinks, ensuring consistency and preve
 
 ```bash
 # Clone the repository
-git clone <repo-url> ~/.agents-config
-cd ~/.agents-config
+git clone <repo-url> ~/projects/agent-config
+cd ~/projects/agent-config
 
 # Sync to IDE directories (dry-run first)
 python3 sync-to-ides.py --dry-run
@@ -46,9 +46,10 @@ python3 sync-to-ides.py
 The `sync-to-ides.py` script creates symlinks from IDE directories to this repo:
 
 **Claude Code:**
-- `~/.claude/CLAUDE.md` → `~/.agents-config/rules/CLAUDE.md`
-- `~/.claude/commands/` → `~/.agents-config/commands/`
-- `~/.claude/agents/` → `~/.agents-config/agents/`
+- `~/.claude/CLAUDE.md` → `<repo>/rules/CLAUDE.md`
+- `~/.claude/commands/` → `<repo>/commands/`
+- `~/.claude/agents/` → `<repo>/agents/`
+- `~/.claude/skills/<skill-name>/` → `<repo>/skills/<skill-name>/`
 
 **Cursor IDE:**
 - `~/.cursor/commands/` → `~/.agents-config/commands/` (if supported)
@@ -113,4 +114,3 @@ To add a plugin, add an entry to `plugins.json` and re-run `./setup.sh`.
 - `docs/FORMATS.md` - File format documentation
 - `docs/CURSOR_REQUIREMENTS.md` - Cursor-specific requirements
 - `docs/SETUP.md` - Detailed setup guide
-

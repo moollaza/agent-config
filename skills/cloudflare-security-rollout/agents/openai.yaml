@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cloudflare Security Rollout"
+  short_description: "Audit and roll out Cloudflare security baselines"
+  default_prompt: "Use $cloudflare-security-rollout to audit Cloudflare Security Insights and apply the project-hub baseline."
