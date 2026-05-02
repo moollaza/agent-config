@@ -92,6 +92,7 @@ The "if you only have 60 seconds, look at these" list. Think regressions, edge c
 
 Assume a PR in a public repo will be read by strangers, future maintainers, journalists, and security researchers. Write accordingly:
 
+- No personal email addresses, phone numbers, home addresses, personal account IDs, billing details, or private contact channels. Use product-owned aliases or placeholders.
 - No customer names, account IDs, internal URLs, private dashboards, or Slack/Linear/Asana links without an explicit `(internal)` marker.
 - No unpatched security detail that could arm an attacker. If disclosure is needed, wait until the mitigation has shipped.
 - No marketing hype or self-congratulation. Avoid superlatives ("blazingly fast", "game-changing", "massive improvement"). Use neutral, factual language.

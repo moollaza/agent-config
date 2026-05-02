@@ -114,6 +114,14 @@ Before deletion:
 - In the PR description, enumerate every deletion with a one-line justification. Never rely on the diff alone to communicate what was removed.
 - If a file has no tests but exists, treat it as load-bearing by default.
 
+## Public Artifacts and Personal Information
+
+- Treat every repo artifact as potentially public and permanent, even in private repos.
+- Before writing plans, commits, branch names, PRs, issues, review comments, docs, tests, fixtures, screenshots, or snapshots, scan for personal information, secrets, private links, security details, and public-repo optics.
+- Never put the user's personal email addresses, phone numbers, home addresses, personal account IDs, private dashboard URLs, tokens, credentials, or local secrets in git. Use placeholders, product-owned aliases, environment variables, or secret managers.
+- Keep commit messages and plans neutral and factual. Avoid private chat context, venting, speculation, or unnecessary personal/operational detail.
+- If sensitive information reaches git history, stop and ask before rewriting history or force-pushing.
+
 ## Communication
 
 - **Be concise** — sacrifice grammar for concision.
