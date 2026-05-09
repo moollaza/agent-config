@@ -33,13 +33,15 @@ Then proceed with the user's choice. If they say "stay here", drop the suggestio
 
 If the user accepts a clear, before they execute `/clear`:
 
-1. Offer to write a handoff doc using `/zm:handoff` if there's unfinished work worth preserving.
-2. Offer to record any insights to Obsidian (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Claude/`) that should survive the session.
-3. Offer to flag follow-ups as GitHub issues per `rules/github-issue-habits.md` rather than letting them die in chat.
+1. **Update the current Linear issue** with a one-line "paused at: <state>" comment via `mcp__linear-server__save_comment`. This is the durable handoff anchor — the next session resumes from this comment, not from chat memory.
+2. Offer to write a handoff doc using `/zm:handoff` if there's substantial unfinished context worth preserving locally.
+3. Offer to record any insights to Obsidian (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Claude/`) — Obsidian holds learnings, not active threads.
+4. Offer to file unresolved follow-ups as Linear issues per `rules/thread-tracking.md` rather than letting them die in chat.
 
 ## Anti-patterns
 
 - Silently carrying old TodoWrite items into a new topic.
+- Pivoting to a new topic without leaving a "paused at" note on the previous Linear issue. (You will forget what state the old thread was in.)
 - Recalling file paths from the previous task without re-verifying.
 - Applying memory recalls about Project A while operating in Project B.
 - Continuing because "it's faster" — usually it's not, since you'll re-read most of the new context anyway.

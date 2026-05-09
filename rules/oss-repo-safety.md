@@ -34,7 +34,9 @@ Walk this checklist for every commit headed to a public repo, before running `gi
 
 ## Issues and discussions in OSS
 
-- Don't drop a private/internal context dump into a public issue. Translate to public-readable framing before posting.
+- **Linear is still the work-of-record** even for OSS repos (per `rules/thread-tracking.md`). GitHub issues exist for OSS contributor visibility, not as the user's primary tracker.
+- A user-reported public bug → reproduce, mirror to Linear, link the GitHub issue in Linear notes. Work happens in Linear; the GitHub issue gets closed when the PR merges.
+- Don't drop a private/internal context dump into a public GitHub issue. Translate to public-readable framing before posting.
 - For a security report on someone else's OSS repo, follow their `SECURITY.md` (or use a private advisory) before opening a public issue.
 - For your own OSS repos, accept reports via private security advisory; don't ask reporters to use public issues.
 

@@ -9,11 +9,11 @@ When tackling non-trivial work, prefer invoking installed skills over freeform p
 | Frame | `compound-engineering:ce-brainstorm` | Requirements fuzzy; user wants to think out loud. | Right-sized requirements doc. |
 | Frame | `improve-codebase-architecture` (Matt) | Want plan grounded in codebase domain language and ADRs (`CONTEXT.md` + `docs/adr/`). | Architectural deepening opportunities. |
 | Plan | `compound-engineering:ce-plan` | Convert resolved context into a plan-of-record. | Project plan document. |
-| Plan | `to-prd` (Matt) | Convert resolved context into a PRD. | Product requirements doc. |
+| Plan | `to-prd` (Matt) | Convert resolved context into a PRD; publishes to **Linear** (per Agent Skills config in CLAUDE.md). | Product requirements doc as Linear issue. |
 | Stress-test | `grill-me` (Matt) | Before implementing a non-trivial plan; user says "stress test", "poke holes", "grill me". | Open decisions resolved one branch at a time. |
 | Stress-test | `grill-with-docs` (Matt) | Same as `grill-me` but plan needs to align with codebase docs/ADRs. | Resolved plan informed by codebase context. |
-| Track | `to-issues` (Matt) | Convert PRD into vertical-slice GitHub issues. | One issue per slice, ready to implement. |
-| Track | `triage` (Matt) | Sweep an unstructured backlog into actionable tasks. | Prioritized, labeled issue list. |
+| Track | `to-issues` (Matt) | Convert PRD into vertical-slice **Linear** issues (per Agent Skills config in CLAUDE.md). | One issue per slice, ready to implement. |
+| Track | `triage` (Matt) | Sweep the **Linear** backlog into actionable tasks. | Prioritized, labeled issue list. |
 | Build | `tdd` (Matt) | Feature with testable behavior; want red-green-refactor. | Tests-first implementation. |
 | Build | `compound-engineering:ce-work` | Standard end-to-end implementation loop. | Implemented + verified change. |
 | Review | `compound-engineering:ce-review` | Multi-agent code review of pending changes. | Review report. |
