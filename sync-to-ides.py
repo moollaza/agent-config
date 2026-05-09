@@ -83,6 +83,7 @@ def create_symlink(source, target, force=False, dry_run=False):
                 return True
             else:
                 print(f"  ♻ Would update: {target} -> {source} (currently -> {current_target})")
+                return True
         elif target.exists():
             print(f"  ⚠ Would overwrite: {target} (use --force)")
             return False
@@ -261,4 +262,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-
