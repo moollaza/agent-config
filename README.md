@@ -36,7 +36,7 @@ python3 sync-to-ides.py
 ├── commands/        # Command definitions
 ├── agents/          # Agent definitions
 ├── skills/          # Local skills (synced via symlinks)
-├── plugins.json     # External plugin registry (installed, not stored)
+├── plugins.json     # External skills/plugins registry (installed, not stored)
 ├── docs/            # Documentation
 └── scripts/         # Utility scripts
 ```
@@ -85,15 +85,15 @@ python3 sync-to-ides.py --verify
 
 Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. Use the `sync-commands` skill which runs the bundled transform script and audits for convention compliance.
 
-## External Plugins
+## External Skills and Plugins
 
-External plugins are tracked in `plugins.json` but **not stored in this repo**. This keeps the repo lean while making setup reproducible.
+External skills and plugins are tracked in `plugins.json` but **not stored in this repo**. This keeps the repo lean while making setup reproducible.
 
-- `plugins.json` — registry of plugins to install (name, source, install command)
+- `plugins.json` — registry of skills/plugins to install (name, source, install command)
 - `setup.sh` — installs them interactively during setup
-- Plugins live in `~/.claude/plugins/` (managed by Claude Code)
+- Skills/plugins live in the agent-specific directories managed by their installer, such as `~/.claude/skills/` for Claude Code skills
 
-To add a plugin, add an entry to `plugins.json` and re-run `./setup.sh`.
+To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`. Use `npx skills add ... -s <skill-name>` when an upstream repository contains multiple skills and only one should be installed.
 
 ## IDE-Specific Notes
 
@@ -113,4 +113,3 @@ To add a plugin, add an entry to `plugins.json` and re-run `./setup.sh`.
 - `docs/FORMATS.md` - File format documentation
 - `docs/CURSOR_REQUIREMENTS.md` - Cursor-specific requirements
 - `docs/SETUP.md` - Detailed setup guide
-

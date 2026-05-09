@@ -32,13 +32,13 @@ else
     exit 1
 fi
 
-# Install external plugins from plugins.json
+# Install external skills/plugins from plugins.json
 echo ""
-echo "External plugins"
+echo "External skills/plugins"
 echo "======================================"
 if [ -f "$SCRIPT_DIR/plugins.json" ]; then
     PLUGIN_COUNT=$(python3 -c "import json; print(len(json.load(open('$SCRIPT_DIR/plugins.json'))['plugins']))")
-    echo "Found $PLUGIN_COUNT plugin(s) in plugins.json:"
+    echo "Found $PLUGIN_COUNT external item(s) in plugins.json:"
     python3 -c "
 import json
 plugins = json.load(open('$SCRIPT_DIR/plugins.json'))['plugins']
@@ -46,7 +46,7 @@ for p in plugins:
     print(f\"  - {p['name']}: {p['description']}\")
 "
     echo ""
-    read -p "Install external plugins? (y/N): " -n 1 -r
+    read -p "Install external skills/plugins? (y/N): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         python3 -c "
@@ -61,7 +61,7 @@ for p in plugins:
         print(f\"  ✗ {p['name']} failed: {result.stderr.strip()}\", file=sys.stderr)
 "
     else
-        echo "Plugin install skipped."
+        echo "External install skipped."
     fi
 else
     echo "No plugins.json found, skipping."
@@ -72,4 +72,3 @@ echo "Setup complete!"
 echo ""
 echo "To verify symlinks:"
 echo "  python3 sync-to-ides.py --verify"
-
