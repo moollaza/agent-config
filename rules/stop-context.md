@@ -1,6 +1,8 @@
 # Stop Context
 
-Before stopping for **any** reason, write `~/.claude/stop-context.json`. The notification hook reads this file to send a Telegram message. **No file = silent stop.** Always write it.
+Before stopping for **any** reason, write `~/.claude/stop-context.json`. The notification hook reads it to journal the stop locally (Obsidian daily note) and to decide whether to ping the user via Telegram.
+
+**Telegram fires only when `status == "blocked"` or `questions` is non-empty** — done-pings were too noisy. Always write the file anyway: it's the audit record and forces you to summarize state before stopping.
 
 ## Schema
 

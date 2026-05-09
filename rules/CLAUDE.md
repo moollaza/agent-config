@@ -61,7 +61,7 @@ Lock files (`bun.lock`, `pnpm-lock.yaml`, `package-lock.json`) required — neve
 - Issues: `rules/github-issue-habits.md`. Linear (in `project-hub`): `rules/linear-task-conventions.md`.
 - Debugging: don't dismiss user-reported bugs; "works for me" via Playwright is not proof. → `rules/debugging.md`.
 - Communication: concise, active voice, no preambles, no emoji unless asked. → `rules/communication.md`.
-- Stop context: write `~/.claude/stop-context.json` before stopping. → `rules/stop-context.md`.
+- Stop context: write `~/.claude/stop-context.json` before stopping (always — it's the audit record). Telegram pings only when `status: "blocked"` or `questions` is non-empty. → `rules/stop-context.md`.
 
 ## Memory + Obsidian
 
