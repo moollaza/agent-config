@@ -14,7 +14,7 @@
 - **Issue titles/bodies**: see `rules/github-issue-habits.md`.
 - **Linear titles/bodies**: see `rules/linear-task-conventions.md`.
 - **Branch names**: kebab-case, scoped, no internal codenames in OSS. `fix-rate-limit-headers`, not `fix-the-thing-mike-flagged`.
-- **Code comments**: only when the WHY is non-obvious. Never narrate WHAT well-named code already says.
+- **Code comments**: write helpful comments where they aid future readers — explain non-obvious WHY, surface invariants, flag gotchas. Don't narrate WHAT well-named code already says. Senior-engineer judgment, not minimal-by-default.
 
 ## End-of-turn
 
