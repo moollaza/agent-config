@@ -73,10 +73,14 @@ Matt's `to-prd`, `to-issues`, `triage`, `tdd`, `improve-codebase-architecture`, 
 - **Update**: pass the issue `id` to `mcp__linear-server__save_issue`.
 - **Comments**: `mcp__linear-server__save_comment` with the issue id.
 
-Canonical triage labels → Linear labels (create them on first use if missing):
+Canonical triage labels → Linear labels (the team already uses title-case category labels — match reality, don't invent):
 
-- `bug` → `bug`
-- `enhancement` → `enhancement`
+**Category** (already in team, do NOT recreate):
+- `bug` → `Bug`
+- `enhancement` → `Feature` (also `Improvement` for non-feature improvements)
+- chore-class → `Chore`
+
+**Triage state** (workspace-scoped; create once via `mcp__linear-server__create_issue_label` if missing — verify with `mcp__linear-server__list_issue_labels`):
 - `needs-triage` → `triage:needs-triage`
 - `needs-info` → `triage:needs-info`
 - `ready-for-agent` → `triage:ready-for-agent`
