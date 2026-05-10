@@ -163,6 +163,34 @@ def create_symlink(source, target, force=False, dry_run=False):
         return False
 
 
+def _cleanup_stale_symlinks(dry_run=False):
+    """Remove symlinks in IDE rules/ dirs that point to deleted source files.
+
+    When a topic rule is removed from the repo, its corresponding symlink in
+    ~/.claude/rules/ and/or ~/.codex/rules/ becomes broken. The auto-discovery
+    in _discover_rules only knows about files that currently exist, so without
+    this cleanup pass the broken symlinks linger.
+    """
+    for ide_rules in (CLAUDE_DIR / 'rules', CODEX_DIR / 'rules'):
+        if not ide_rules.is_dir():
+            continue
+        for entry in ide_rules.iterdir():
+            if not entry.is_symlink():
+                continue
+            try:
+                target = entry.readlink()
+            except OSError:
+                continue
+            # Resolve target relative to the symlink's parent if it's relative
+            resolved = (entry.parent / target).resolve() if not target.is_absolute() else target.resolve()
+            if not resolved.exists():
+                if dry_run:
+                    print(f"  ♻ Would remove stale symlink: {entry} -> {target}")
+                else:
+                    print(f"  ♻ Removing stale symlink: {entry} -> {target}")
+                    entry.unlink()
+
+
 def _check_one_symlink(label, target, source):
     """Verify one symlink. Returns True iff valid (or absent-and-optional)."""
     if not target.exists():
@@ -246,6 +274,11 @@ def main():
     if args.verify:
         valid = verify_symlinks(args.ide)
         sys.exit(0 if valid else 1)
+
+    # Clean up stale symlinks: any symlink in ~/.claude/rules/ or ~/.codex/rules/
+    # whose target no longer exists in the repo (because the source rule file was
+    # deleted) should be removed so the IDE doesn't keep a broken pointer.
+    _cleanup_stale_symlinks(args.dry_run)
 
     print(f"Syncing from {REPO_DIR} to IDE directories...")
     print("=" * 60)

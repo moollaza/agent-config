@@ -5,7 +5,7 @@ Centralized configuration repository for Claude Code, Codex, and Cursor.
 ## Overview
 
 Single source of truth for:
-- Assistant rules — root contract (`rules/CLAUDE.md`) plus topic files in `rules/`
+- Assistant rules — `rules/CLAUDE.md` (Claude Code) and `rules/AGENTS.md` (Codex)
 - Command definitions
 - Agent definitions
 - Local skills (`skills/`) and external skill registry (`plugins.json`)
@@ -14,11 +14,15 @@ Files are symlinked into IDE directories — never edit `~/.claude/` or `~/.code
 
 ## Authoring philosophy
 
-The root contract (`rules/CLAUDE.md` — also exposed as `~/.codex/AGENTS.md`) is intentionally short. Topic detail lives in separate files under `rules/`, surfaced via cross-reference. Inspired by [Matt Pocock's AGENTS.md guide](https://www.aihero.dev/a-complete-guide-to-agents-md):
+The contract is **a small set of numbered guidelines** — high-level direction on how the agent should behave plus explicit guards against the user's known bad habits. No topic files, no progressive-disclosure breadcrumbs, no operational templates that the agent would already produce on its own.
 
-- Keep the always-loaded root file lean — every token loads on every request.
-- Move domain-specific guidance into `rules/<topic>.md` and reference it from the root.
-- Avoid stale paths — describe capabilities, not file structure.
+Inspired by [Matt Pocock's AGENTS.md guide](https://www.aihero.dev/a-complete-guide-to-agents-md):
+
+- Keep the always-loaded contract lean — every token loads on every request.
+- Each rule must earn its keep: name a specific failure mode that breaks if the rule is removed.
+- Trust senior-engineer judgment for everything else.
+
+If a rule emerges that needs detail (templates, checklists, protocols), prefer adding a feedback memory at `~/.claude/projects/<encoded-cwd>/memory/` over reintroducing topic files — memory loads automatically and stays close to the rules in spirit.
 
 ## Quick Start
 
@@ -52,16 +56,15 @@ python3 sync-to-ides.py
 
 ## Syncing
 
-`sync-to-ides.py` creates symlinks from IDE directories to this repo.
+`sync-to-ides.py` creates symlinks from IDE directories to this repo, and removes any stale symlinks whose source has been deleted.
 
 **Claude Code (`~/.claude/`):**
 - `CLAUDE.md` → `rules/CLAUDE.md`
-- `rules/<topic>.md` → `rules/<topic>.md` (auto-discovered)
 - `commands/`, `agents/`, `skills/<each>` → matching repo paths
 
 **Codex (`~/.codex/`):**
-- `AGENTS.md` → `rules/CLAUDE.md` (same source, agent-conventional filename)
-- `rules/<topic>.md` → `rules/<topic>.md` (auto-discovered, mirrored from Claude)
+- `AGENTS.md` → `rules/AGENTS.md` (Codex tool-map; instructs Codex to read `~/.codex/rules/CLAUDE.md` for the universal contract)
+- `rules/CLAUDE.md` → `rules/CLAUDE.md` (the universal contract, mirrored)
 
 **Cursor (`~/.cursor/`):**
 - `commands/`, `agents/` → matching repo paths (Cursor support TBD)
@@ -111,14 +114,12 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 ## IDE-Specific Notes
 
 ### Claude Code
-- Reads `~/.claude/CLAUDE.md` for global rules.
+- Reads `~/.claude/CLAUDE.md` for global rules (the 11-bullet contract).
 - Reads `commands/` and `agents/` directories.
-- Topic detail in `rules/<topic>.md` is loaded on-demand when CLAUDE.md references it.
 
 ### Codex
-- Reads `~/.codex/AGENTS.md` for global rules.
-- Topic detail in `~/.codex/rules/<topic>.md` mirrors `~/.claude/rules/`.
-- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `rules/CLAUDE.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
+- Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/rules/CLAUDE.md` for the universal contract.
+- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `rules/AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
 
 ### Cursor IDE
 - Does NOT use `CLAUDE.md` filename.

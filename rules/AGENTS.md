@@ -2,8 +2,6 @@
 
 **Read `~/.codex/rules/CLAUDE.md` first** — that's the universal operating contract (shared with Claude Code via symlinks from `~/projects/agent-config/rules/CLAUDE.md`). This file extends it with Codex-specific tool mappings only.
 
-Topic detail rules live in `~/.codex/rules/<topic>.md` — same files Claude Code reads. Load on demand when their topic is in scope.
-
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)
 
