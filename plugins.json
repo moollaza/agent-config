@@ -23,8 +23,44 @@
     {
       "name": "improve-codebase-architecture",
       "source": "mattpocock/skills",
-      "description": "Find architecture deepening opportunities using project domain language and ADRs",
+      "description": "Find architecture deepening opportunities using project domain language and ADRs (Matt Pocock)",
       "install": "npx skills add mattpocock/skills -g -a claude-code -s improve-codebase-architecture -y"
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "source": "mattpocock/skills",
+      "description": "Bootstrap per-repo issue-tracker config for to-prd / to-issues / triage / etc. (Matt Pocock). Note: only knows GitHub + local-md natively; we override with Linear MCP via the Agent Skills block in CLAUDE.md.",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s setup-matt-pocock-skills -y"
+    },
+    {
+      "name": "grill-with-docs",
+      "source": "mattpocock/skills",
+      "description": "Stress-test plans aligned with codebase docs and ADRs (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s grill-with-docs -y"
+    },
+    {
+      "name": "to-prd",
+      "source": "mattpocock/skills",
+      "description": "Turn resolved context into a PRD (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s to-prd -y"
+    },
+    {
+      "name": "to-issues",
+      "source": "mattpocock/skills",
+      "description": "Convert PRDs into vertical-slice GitHub issues (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s to-issues -y"
+    },
+    {
+      "name": "tdd",
+      "source": "mattpocock/skills",
+      "description": "Implement features using red-green-refactor for agentic coding (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s tdd -y"
+    },
+    {
+      "name": "triage",
+      "source": "mattpocock/skills",
+      "description": "Organize GitHub issues; transform backlog ideas into actionable tasks (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s triage -y"
     }
   ]
 }

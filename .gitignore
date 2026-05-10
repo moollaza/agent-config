@@ -17,3 +17,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Local-only rules (contain workplace-internal terminology — never commit to public repo)
+rules/asana-data-protection.md
+
