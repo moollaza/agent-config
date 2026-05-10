@@ -1,8 +1,3 @@
----
-description: "Conventions for writing pull request descriptions. Apply whenever creating or updating a PR body — including after a force-push or revision — in any repository, public or private."
-alwaysApply: true
----
-
 # PR Description Conventions
 
 ## When this applies

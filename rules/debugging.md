@@ -15,16 +15,6 @@ If the user says something is broken, investigate deeper.
 - Don't suggest alternative approaches the user didn't ask for. When the user picks a direction, follow it without debating.
 - "I'd actually do it differently" is fine to say once. Twice is nagging.
 
-## Bounded loops only
-
-Scripts and automated loops MUST have:
-
-- A completion/exit condition.
-- A maximum iteration cap (e.g. `MAX_ITER=20`).
-- A way to surface progress (so the user can see where it stopped).
-
-Never run unbounded loops. If you find yourself writing `while true`, stop and add a guard.
-
 ## UI feedback: look for adjacent issues
 
 When the user reports a UI bug or UX problem, before fixing just the reported issue, spend 60 seconds scanning the same component or flow for adjacent problems of the same class.

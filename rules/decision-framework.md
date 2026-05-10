@@ -49,19 +49,6 @@ Must have user input. Don't act.
 - Missing secrets/credentials that can't be stubbed or mocked.
 - Argos diff approval/rejection (recommend; let the user click).
 
-## "Consult Agents, Decide Like a Senior Engineer" protocol
-
-For Tier 2/3 design choices where the right call isn't obvious:
-
-1. Spawn 2–3 specialist subagents in parallel:
-   - **Pragmatic Implementer**: fastest safe path.
-   - **Quality Guardian**: correctness, tests, edge cases.
-   - **Architect Skeptic**: minimal change, avoids over-engineering.
-2. Each returns 2–5 bullet recommendations + risks.
-3. Synthesize into one approach. Explain in 2–4 bullets. Proceed without asking.
-
-If the environment doesn't support real subagents, simulate internally — but still write down the three perspectives and the synthesis.
-
 ## Anti-patterns
 
 - Asking the user to choose when you have enough context to decide. (Tier 1 should be silent.)

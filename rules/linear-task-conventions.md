@@ -1,11 +1,5 @@
----
-description: "Conventions for creating, structuring, and executing Linear issues. Apply when creating, updating, or executing Linear issues — whether via MCP, ce:plan, ce:work, or ad-hoc."
-alwaysApply: true
----
-
 # Linear Task Conventions
 
----
 
 ## Organization
 
@@ -15,7 +9,6 @@ Use one Project per product or side project. Include a brief "what and why" in t
 
 Use Milestones within Projects for major phases (e.g., "MVP", "Beta", "Launch") only when the project is large enough to warrant them.
 
----
 
 ## Issue Hierarchy
 
@@ -25,7 +18,6 @@ Use Milestones within Projects for major phases (e.g., "MVP", "Beta", "Launch") 
 
 Promote an Issue to a Project if it accumulates more than ~8 sub-issues.
 
----
 
 ## Title Format
 
@@ -41,7 +33,6 @@ Make titles specific enough to distinguish from siblings at a glance.
 - Extract payment logic into service object
 - Remove deprecated webhook handler from notifications
 
----
 
 ## Description Templates
 
@@ -81,7 +72,6 @@ Use a lighter template — context is inherited from the parent:
 **Good:** "API returns 429 status with retry-after header when rate limit exceeded"
 **Bad:** "Rate limiting works properly"
 
----
 
 ## Parallelism and Dependencies
 
@@ -99,7 +89,6 @@ Issue: Add user authentication
   └── Sub: Add end-to-end auth tests        (blocked by both above → sequential)
 ```
 
----
 
 ## Labels
 
@@ -109,7 +98,6 @@ Optionally use a **Scope** label group when the project spans distinct areas: `F
 
 Use priority levels (Urgent / High / Medium / Low) to signal execution order when dependencies alone do not capture it.
 
----
 
 ## Status Workflow
 
