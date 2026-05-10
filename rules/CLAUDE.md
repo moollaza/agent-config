@@ -15,6 +15,22 @@ The user runs many parallel threads and easily loses track. **Active threads liv
 
 **If Linear MCP fails or isn't wired** for a project the user wants tracked: **STOP** (Tier 4). Do not fall back to chat-only tracking — that's the failure mode this rule guards against. Triggers, templates, and hygiene: `rules/thread-tracking.md`.
 
+## Forcing function: Use skills — don't freeform plans, work, or reviews
+
+The agent forgets to reach for skills. **Default to invoking a skill, not freeforming.** The harness lists every installed skill; this is the canonical sequence per phase:
+
+1. **Plan** → `ce-plan` (project plan) or `to-prd` (PRD that publishes to Linear). Never write a plan in chat for non-trivial work.
+2. **Deepen** → `deepen-plan` when a plan section needs research or more depth.
+3. **Stress-test** → `grill-me` (or `grill-with-docs` when the codebase has `CONTEXT.md` / `docs/adr/`) before implementing.
+4. **Track** → `to-issues` (PRD → vertical slices in Linear) or `triage` (sweep backlog).
+5. **Implement** → `tdd` (testable behavior) or `ce-work` (end-to-end). For one-shot fixes, `zm:quick-fix`.
+6. **Review** → `ce-review` (multi-agent code review). `argos-pr-review` for UI PRs with Argos red/pending.
+7. **Capture** → `ce-compound` for non-obvious learnings → also write to Obsidian.
+
+If unsure which skill applies: run `find-skills` first. Personal `zm:plan → zm:research → zm:implement → zm:review → zm:cleanup` chain is also valid.
+
+**Skipping is allowed only for genuinely trivial tasks** (typo, single-line config bump, chat clarification). If you're freeforming a non-trivial workflow, **stop and pick a skill**. Decision rules between similar skills (`grill-me` vs `grill-with-docs`, `to-issues` vs `triage`, `tdd` vs `ce-work`): `rules/workflow-skills.md`.
+
 ## Non-negotiables
 
 - Keep going until **Definition of Done** is met. Don't ask "should I continue?"
@@ -41,20 +57,6 @@ The user runs many parallel threads and easily loses track. **Active threads liv
 - **T4 block**: destructive/irreversible, prod/shared infra, money, credentials, missing secrets, **missing Linear context**.
 
 Detail + "Consult Agents" protocol: `rules/decision-framework.md`.
-
-## Workflow skills
-
-Prefer skills over freeform prose for non-trivial work:
-
-- Frame: `ce-brainstorm` (fuzzy reqs), `improve-codebase-architecture` (codebase-grounded plan).
-- Plan: `ce-plan` (project plan), `to-prd` (PRD → publishes to Linear via the Agent Skills config below).
-- Stress-test: `grill-me` / `grill-with-docs` before implementing.
-- Track: `to-issues` (PRD → vertical slices in Linear), `triage` (sweep Linear backlog).
-- Build: `tdd` (testable behavior), `ce-work` (end-to-end).
-- Review: `ce-review`, `argos-pr-review` (UI PRs with Argos red/pending).
-- Capture: `ce-compound` (non-obvious post-fix learning) → also write to Obsidian.
-
-Triggers + decision rules: `rules/workflow-skills.md`. Personal loop: `zm:plan` → `zm:research` → `zm:implement` → `zm:review` → `zm:cleanup` (+ `zm:handoff`).
 
 ## Agent Skills config (Matt Pocock skills → Linear MCP)
 
