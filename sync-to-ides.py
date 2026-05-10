@@ -27,7 +27,6 @@ SYNC_MAPPINGS = [
     # ~/.codex/rules/CLAUDE.md via the rules auto-discovery below) plus the
     # Codex-only tool map. Keeps the always-on Claude Code prompt lean.
     ('rules/AGENTS.md', None, None, False, '.codex/AGENTS.md'),
-    ('commands', '.claude/commands', None, False, None),
     ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None, False, None),
     # Skills: each subdir of skills/ gets its own symlink (added dynamically)
     # Rules other than CLAUDE.md and AGENTS.md: each file mirrors to .claude/rules/

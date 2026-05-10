@@ -6,7 +6,6 @@ Centralized configuration repository for Claude Code and Codex.
 
 Single source of truth for:
 - Assistant rules — `rules/CLAUDE.md` (Claude Code) and `rules/AGENTS.md` (Codex)
-- Command definitions (`commands/`)
 - Local skills (`skills/`) and external skill registry (`plugins.json`)
 
 Files are symlinked into IDE directories — never edit `~/.claude/` or `~/.codex/` paths directly.
@@ -45,7 +44,6 @@ python3 sync-to-ides.py
 ```
 .agents-config/
 ├── rules/           # Assistant rules (Claude uses CLAUDE.md)
-├── commands/        # zm:* slash commands
 ├── skills/          # Local skills (synced via symlinks)
 ├── plugins.json     # External skills/plugins registry (installed, not stored)
 ├── docs/            # Documentation
@@ -58,7 +56,7 @@ python3 sync-to-ides.py
 
 **Claude Code (`~/.claude/`):**
 - `CLAUDE.md` → `rules/CLAUDE.md`
-- `commands/`, `skills/<each>` → matching repo paths
+- `skills/<each>` → matching repo paths
 
 **Codex (`~/.codex/`):**
 - `AGENTS.md` → `rules/AGENTS.md` (Codex tool-map; instructs Codex to read `~/.codex/rules/CLAUDE.md` for the universal contract)
@@ -91,10 +89,6 @@ python3 sync-to-ides.py --verify
 3. Commit changes to git
 4. Pull updates on other machines
 
-## Syncing Commands from Upstream
-
-Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. Use the `sync-commands` skill which runs the bundled transform script and audits for convention compliance.
-
 ## External Skills and Plugins
 
 External skills and plugins are tracked in `plugins.json` but **not stored in this repo**. This keeps the repo lean while making setup reproducible.
@@ -109,7 +103,7 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 
 ### Claude Code
 - Reads `~/.claude/CLAUDE.md` for global rules (the 11-bullet contract).
-- Reads `commands/` and `skills/` directories.
+- Reads `skills/` directory.
 
 ### Codex
 - Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/rules/CLAUDE.md` for the universal contract.
@@ -117,5 +111,4 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 
 ## Documentation
 
-- `docs/FORMATS.md` - File format documentation
 - `docs/SETUP.md` - Detailed setup guide
