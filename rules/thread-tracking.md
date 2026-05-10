@@ -1,36 +1,6 @@
 # Thread Tracking
 
-## The forcing function
-
-The user runs many parallel threads and easily loses track. **Linear is the source of truth for active threads. Obsidian is the source of truth for documented learning. Chat is neither — work that lives only in chat is forgotten work.**
-
-Agents are responsible for keeping the user focused: every non-trivial thread of work must have a Linear issue (or project), opened or referenced before substantive work begins. If Linear isn't available, **stop and require setup** — don't fall back to chat-only tracking.
-
-See `rules/linear-task-conventions.md` for issue/sub-issue title and description conventions.
-
-## Session-start protocol (REQUIRED)
-
-When a session begins on a known project, before substantive work:
-
-1. **Identify the project.** Use the current repo name + `~/projects/project-hub/inventory.md` to find the matching Linear project.
-2. **Query open Linear threads** scoped to that project: `mcp__linear-server__list_issues` with `project=<id>` and `state=Todo,In Progress`.
-3. **Surface to the user** — one-line summary per open issue. Ask:
-   > "I see N open Linear issues on `<project>`: [titles]. Are we continuing one of these, or starting new?"
-4. **If new**, ask whether to file a Linear issue first. Default to yes for non-trivial work.
-
-Skip the session-start check only when:
-
-- Trivial single-shot tasks (typo, single-line config bump).
-- The user has explicitly said "skip Linear for this session".
-- Working in a repo not in the user's project list (e.g. exploring an external OSS repo).
-
-## When Linear isn't set up — STOP
-
-If `mcp__linear-server__*` tools fail (auth error, no team) on a project the user has stated they want tracked:
-
-1. Halt substantive work (Tier 4).
-2. Tell the user: "Linear MCP isn't reachable. I won't fall back to chat-only tracking — that's the failure mode we're guarding against. Want to (a) authenticate the Linear MCP now, (b) explicitly skip tracking for this session, or (c) work in a different repo where Linear is wired?"
-3. Wait for the user's choice.
+Triggers, templates, and hygiene for Linear thread tracking. The always-on enforcement (session-start protocol, halt-if-not-set-up rule) lives in `CLAUDE.md` — this file is the on-demand detail.
 
 ## When to open a Linear issue
 
@@ -63,11 +33,13 @@ Follow `rules/linear-task-conventions.md`:
 
 ## When the user pivots mid-session
 
-Per `rules/context-switching.md`: a topic switch is a thread switch. Before pivoting:
+A topic switch is a thread switch. Before pivoting:
 
-1. Update the current Linear issue with a one-line "paused at: <state>" comment.
+1. Update the current Linear issue with a one-line "paused at: <state>" comment via `mcp__linear-server__save_comment`.
 2. If the new topic isn't a known Linear issue, ask the user whether to file one before continuing.
 3. If both threads will run in parallel (the user said "keep both alive"), suggest `/clear` and a new session — context bleed across threads is exactly the failure mode we're guarding against.
+
+See `rules/context-switching.md` for the broader topic-switch protocol.
 
 ## GitHub issues — secondary, OSS-contributor only
 
@@ -79,7 +51,7 @@ Defaults:
 - A maintainer-driven feature → Linear is primary. Open a public GitHub issue only if external visibility/contribution is wanted.
 - Security reports → private GitHub security advisory, not a public issue (per `rules/oss-repo-safety.md`).
 
-When you open a GitHub issue (rare), title and body conventions still follow this rule's templates.
+When you open a GitHub issue (rare), title and body conventions still follow the templates above.
 
 ## Obsidian — durable learning, not active threads
 

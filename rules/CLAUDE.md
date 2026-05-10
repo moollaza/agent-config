@@ -1,6 +1,6 @@
 # Operating Contract
 
-Source: `~/projects/agent-config/rules/CLAUDE.md`. Symlinked as `~/.claude/CLAUDE.md` (Claude Code) and `~/.codex/AGENTS.md` (Codex). Topic detail in `~/.claude/rules/<topic>.md` — read on demand.
+Source: `~/projects/agent-config/rules/CLAUDE.md`. Symlinked to `~/.claude/CLAUDE.md` (Claude Code). For Codex, the parallel `rules/AGENTS.md` references this file plus a Codex tool map. Topic detail in `~/.claude/rules/<topic>.md` — read on demand.
 
 ## Forcing function: Linear is the source of truth for active threads
 
@@ -13,21 +13,15 @@ The user runs many parallel threads and easily loses track. **Active threads liv
 3. Surface to the user — "I see N open threads on `<project>`: [titles]. Continuing one, or new?"
 4. New thread → ask whether to file a Linear issue first. Default to yes for non-trivial work.
 
-**If Linear MCP fails or isn't wired** for a project the user wants tracked: **STOP** (Tier 4). Do not fall back to chat-only tracking — that's the failure mode this rule guards against. Detail and triggers: `rules/thread-tracking.md`.
-
-## Bad habits this contract guards against
-
-1. **Working without a Linear thread of record.** Linear-first; see above + `rules/thread-tracking.md`.
-2. **Carrying topic-shifted context across sessions.** When the user pivots, update the current Linear thread, then recommend `/clear`. → `rules/context-switching.md`.
-3. **Treating OSS repos like private ones.** Run the OSS checklist before any public commit/push/issue. → `rules/oss-repo-safety.md`.
+**If Linear MCP fails or isn't wired** for a project the user wants tracked: **STOP** (Tier 4). Do not fall back to chat-only tracking — that's the failure mode this rule guards against. Triggers, templates, and hygiene: `rules/thread-tracking.md`.
 
 ## Non-negotiables
 
-- **Linear thread or stop.** Non-trivial work has a Linear issue before substantive code lands. If MCP is unreachable, halt and ask the user to authenticate or explicitly skip.
 - Keep going until **Definition of Done** is met. Don't ask "should I continue?"
 - If blocked, try yourself first. If stuck, ask **one** question with **2–3 options** + recommended default.
 - **No silent deletions.** Only delete what you created in this PR, were told to delete, or got explicit confirmation for. Enumerate every deletion in the PR description.
-- **Public artifacts are permanent.** No personal email/phone/address/account-IDs, no private dashboard URLs, no tokens or secrets. Use placeholders, aliases, env vars.
+- **Public artifacts are permanent.** No personal email/phone/address/account-IDs, no private dashboard URLs, no tokens or secrets. Use placeholders, aliases, env vars. Detail: `rules/oss-repo-safety.md`.
+- **Topic switches preserve threads.** On a pivot, leave a "paused at" comment on the current Linear issue, then recommend `/clear`. Detail: `rules/context-switching.md`.
 - **Bounded loops only.** Every script/automated loop has an exit condition + max iteration cap.
 
 ## Definition of Done
@@ -114,23 +108,3 @@ Lock files (`bun.lock`, `pnpm-lock.yaml`, `package-lock.json`) required — neve
 ## Maintaining
 
 Edit `~/projects/agent-config/`, then `python3 sync-to-ides.py` to refresh symlinks for both Claude Code and Codex. External skills live in `plugins.json`.
-
-<!-- BEGIN COMPOUND CODEX TOOL MAP -->
-## Compound Codex Tool Mapping (Claude Compatibility)
-
-This section maps Claude Code plugin tool references to Codex behavior. Auto-managed.
-
-- Read: `cat`/`sed` or `rg`
-- Write: shell redirection or `apply_patch`
-- Edit/MultiEdit: `apply_patch`
-- Bash: `shell_command`
-- Grep: `rg` (fallback: `grep`)
-- Glob: `rg --files` or `find`
-- LS: `ls` via `shell_command`
-- WebFetch/WebSearch: `curl` or Context7
-- AskUserQuestion: numbered list, wait for reply. Multi-select = comma-separated.
-- Task/Subagent/Parallel: sequential in main thread; `multi_tool_use.parallel` for tool calls.
-- TodoWrite/TodoRead: file-based todos in `todos/`.
-- Skill: open referenced `SKILL.md`.
-- ExitPlanMode: ignore.
-<!-- END COMPOUND CODEX TOOL MAP -->

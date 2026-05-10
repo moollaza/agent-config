@@ -11,8 +11,7 @@
 
 - **Commits**: short imperative subject, factual body. No marketing. No private chat context.
 - **PR descriptions**: see `rules/pr-descriptions.md` (canonical).
-- **Issue titles/bodies**: see `rules/github-issue-habits.md`.
-- **Linear titles/bodies**: see `rules/linear-task-conventions.md`.
+- **Issue titles/bodies (Linear primary, GitHub OSS-only)**: see `rules/thread-tracking.md` and `rules/linear-task-conventions.md`.
 - **Branch names**: kebab-case, scoped, no internal codenames in OSS. `fix-rate-limit-headers`, not `fix-the-thing-mike-flagged`.
 - **Code comments**: write helpful comments where they aid future readers — explain non-obvious WHY, surface invariants, flag gotchas. Don't narrate WHAT well-named code already says. Senior-engineer judgment, not minimal-by-default.
 

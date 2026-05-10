@@ -21,13 +21,18 @@ from pathlib import Path
 # - cursor_supported: whether Cursor actually consumes this (TBD until verified)
 # - codex_dest:     path under HOME for Codex (None to skip)
 SYNC_MAPPINGS = [
-    # Root agent contract: same source, different filename per agent
-    ('rules/CLAUDE.md', '.claude/CLAUDE.md', None, False, '.codex/AGENTS.md'),
+    # Claude Code's universal contract
+    ('rules/CLAUDE.md', '.claude/CLAUDE.md', None, False, None),
+    # Codex's contract: a small AGENTS.md that points at CLAUDE.md (mirrored to
+    # ~/.codex/rules/CLAUDE.md via the rules auto-discovery below) plus the
+    # Codex-only tool map. Keeps the always-on Claude Code prompt lean.
+    ('rules/AGENTS.md', None, None, False, '.codex/AGENTS.md'),
     ('commands', '.claude/commands', '.cursor/commands', True, None),
     ('agents', '.claude/agents', '.cursor/agents', True, None),
     ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None, False, None),
     # Skills: each subdir of skills/ gets its own symlink (added dynamically)
-    # Rules other than CLAUDE.md: each file mirrors to .claude/rules/ AND .codex/rules/
+    # Rules other than CLAUDE.md and AGENTS.md: each file mirrors to .claude/rules/
+    # AND .codex/rules/ via _discover_rules below
 ]
 
 HOME = Path.home()
@@ -49,16 +54,23 @@ def _discover_skills(repo_dir):
 
 
 def _discover_rules(repo_dir):
-    """Auto-discover rule files (excluding CLAUDE.md) and add them to SYNC_MAPPINGS.
+    """Auto-discover rule files (excluding CLAUDE.md and AGENTS.md) and add them
+    to SYNC_MAPPINGS.
 
-    Each rule file is mirrored to BOTH ~/.claude/rules/ and ~/.codex/rules/ so the
-    cross-references inside CLAUDE.md/AGENTS.md resolve for either agent.
+    CLAUDE.md and AGENTS.md are root contracts — they're mapped explicitly to
+    ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md respectively, not into rules/
+    subdirectories. Every other rule file is mirrored to BOTH ~/.claude/rules/
+    and ~/.codex/rules/ so cross-references inside the root contracts resolve
+    for either agent.
     """
     rules_dir = repo_dir / 'rules'
     if not rules_dir.is_dir():
         return
+    # Skip root contracts (mapped explicitly above) and any local-only rules
+    # listed in .gitignore — those must never sync to other agents.
+    skip = {'CLAUDE.md', 'AGENTS.md', 'asana-data-protection.md'}
     for child in sorted(rules_dir.iterdir()):
-        if child.is_file() and child.suffix == '.md' and child.name != 'CLAUDE.md':
+        if child.is_file() and child.suffix == '.md' and child.name not in skip:
             SYNC_MAPPINGS.append((
                 f'rules/{child.name}',
                 f'.claude/rules/{child.name}',
