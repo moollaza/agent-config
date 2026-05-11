@@ -1,6 +1,6 @@
 # Codex Operating Contract
 
-**Read `~/.codex/rules/CLAUDE.md` first** — that's the universal operating contract (shared with Claude Code via symlinks from `~/projects/agent-config/rules/CLAUDE.md`). This file extends it with Codex-specific tool mappings only.
+**Read `~/.codex/CLAUDE.md` first** — that's the universal operating contract (shared with Claude Code via symlinks from `~/projects/agent-config/CLAUDE.md`). This file extends it with Codex-specific tool mappings only.
 
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)

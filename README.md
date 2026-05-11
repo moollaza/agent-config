@@ -5,7 +5,7 @@ Centralized configuration repository for Claude Code and Codex.
 ## Overview
 
 Single source of truth for:
-- Assistant rules — `rules/CLAUDE.md` (Claude Code) and `rules/AGENTS.md` (Codex)
+- Assistant rules — `CLAUDE.md` (Claude Code's contract, also read by Codex) and `AGENTS.md` (Codex tool-map)
 - Local skills (`skills/`) and external skill registry (`plugins.json`)
 
 Files are symlinked into IDE directories — never edit `~/.claude/` or `~/.codex/` paths directly.
@@ -43,7 +43,8 @@ python3 sync-to-ides.py
 
 ```
 .agents-config/
-├── rules/           # Assistant rules (Claude uses CLAUDE.md)
+├── CLAUDE.md        # 11-bullet universal contract (Claude Code + Codex both read)
+├── AGENTS.md        # Codex-specific tool-map; points at CLAUDE.md
 ├── skills/          # Local skills (synced via symlinks)
 ├── plugins.json     # External skills/plugins registry (installed, not stored)
 ├── docs/            # Documentation
@@ -55,12 +56,12 @@ python3 sync-to-ides.py
 `sync-to-ides.py` creates symlinks from IDE directories to this repo, and removes any stale symlinks whose source has been deleted.
 
 **Claude Code (`~/.claude/`):**
-- `CLAUDE.md` → `rules/CLAUDE.md`
+- `CLAUDE.md` → repo `CLAUDE.md`
 - `skills/<each>` → matching repo paths
 
 **Codex (`~/.codex/`):**
-- `AGENTS.md` → `rules/AGENTS.md` (Codex tool-map; instructs Codex to read `~/.codex/rules/CLAUDE.md` for the universal contract)
-- `rules/CLAUDE.md` → `rules/CLAUDE.md` (the universal contract, mirrored)
+- `CLAUDE.md` → repo `CLAUDE.md` (same universal contract)
+- `AGENTS.md` → repo `AGENTS.md` (tool-map; instructs Codex to read `CLAUDE.md` first)
 
 ## Usage
 
@@ -68,7 +69,7 @@ python3 sync-to-ides.py
 # Preview changes
 python3 sync-to-ides.py --dry-run
 
-# Apply (default targets all: claude + codex + cursor)
+# Apply (default targets both Claude Code and Codex)
 python3 sync-to-ides.py
 
 # Force overwrite (replaces real files with symlinks)
@@ -106,8 +107,8 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 - Reads `skills/` directory.
 
 ### Codex
-- Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/rules/CLAUDE.md` for the universal contract.
-- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `rules/AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
+- Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/CLAUDE.md` for the universal contract.
+- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
 
 ## Documentation
 
