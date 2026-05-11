@@ -1,13 +1,11 @@
 # agents-config
 
-Centralized configuration repository for Claude Code, Codex, and Cursor.
+Centralized configuration repository for Claude Code and Codex.
 
 ## Overview
 
 Single source of truth for:
 - Assistant rules — `rules/CLAUDE.md` (Claude Code) and `rules/AGENTS.md` (Codex)
-- Command definitions
-- Agent definitions
 - Local skills (`skills/`) and external skill registry (`plugins.json`)
 
 Files are symlinked into IDE directories — never edit `~/.claude/` or `~/.codex/` paths directly.
@@ -46,8 +44,6 @@ python3 sync-to-ides.py
 ```
 .agents-config/
 ├── rules/           # Assistant rules (Claude uses CLAUDE.md)
-├── commands/        # Command definitions
-├── agents/          # Agent definitions
 ├── skills/          # Local skills (synced via symlinks)
 ├── plugins.json     # External skills/plugins registry (installed, not stored)
 ├── docs/            # Documentation
@@ -60,14 +56,11 @@ python3 sync-to-ides.py
 
 **Claude Code (`~/.claude/`):**
 - `CLAUDE.md` → `rules/CLAUDE.md`
-- `commands/`, `agents/`, `skills/<each>` → matching repo paths
+- `skills/<each>` → matching repo paths
 
 **Codex (`~/.codex/`):**
 - `AGENTS.md` → `rules/AGENTS.md` (Codex tool-map; instructs Codex to read `~/.codex/rules/CLAUDE.md` for the universal contract)
 - `rules/CLAUDE.md` → `rules/CLAUDE.md` (the universal contract, mirrored)
-
-**Cursor (`~/.cursor/`):**
-- `commands/`, `agents/` → matching repo paths (Cursor support TBD)
 
 ## Usage
 
@@ -84,7 +77,6 @@ python3 sync-to-ides.py --force
 # Target specific IDE
 python3 sync-to-ides.py --ide=claude
 python3 sync-to-ides.py --ide=codex
-python3 sync-to-ides.py --ide=cursor
 
 # Verify symlinks
 python3 sync-to-ides.py --verify
@@ -96,10 +88,6 @@ python3 sync-to-ides.py --verify
 2. Changes are immediately available via symlinks
 3. Commit changes to git
 4. Pull updates on other machines
-
-## Syncing Commands from Upstream
-
-Commands are synced from `humanlayer/humanlayer@main/.claude/commands`. Use the `sync-commands` skill which runs the bundled transform script and audits for convention compliance.
 
 ## External Skills and Plugins
 
@@ -115,20 +103,12 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 
 ### Claude Code
 - Reads `~/.claude/CLAUDE.md` for global rules (the 11-bullet contract).
-- Reads `commands/` and `agents/` directories.
+- Reads `skills/` directory.
 
 ### Codex
 - Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/rules/CLAUDE.md` for the universal contract.
 - The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `rules/AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
 
-### Cursor IDE
-- Does NOT use `CLAUDE.md` filename.
-- Primarily uses project-level `.cursor/rules/` directory.
-- Global support for `commands/` and `agents/` needs verification.
-- See `docs/CURSOR_REQUIREMENTS.md` for details.
-
 ## Documentation
 
-- `docs/FORMATS.md` - File format documentation
-- `docs/CURSOR_REQUIREMENTS.md` - Cursor-specific requirements
 - `docs/SETUP.md` - Detailed setup guide

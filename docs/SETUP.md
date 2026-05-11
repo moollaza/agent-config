@@ -6,7 +6,7 @@ Detailed setup instructions for agents-config repository.
 
 - Python 3.6+
 - Git
-- Claude Code and/or Cursor IDE installed
+- Claude Code and/or Codex installed
 
 ## Initial Setup
 
@@ -58,39 +58,22 @@ python3 sync-to-ides.py --verify
 
 Claude automatically reads from:
 - `~/.claude/CLAUDE.md` - Global rules
-- `~/.claude/commands/` - Command definitions
-- `~/.claude/agents/` - Agent definitions
+- `~/.claude/skills/` - Skill definitions
 
 After syncing, these will be symlinks pointing to the repo.
 
-### Cursor IDE
+### Codex
 
-Cursor configuration:
-- Global `~/.cursor/commands/` and `~/.cursor/agents/` may be supported (needs verification)
-- Cursor primarily uses project-level `.cursor/rules/` directory
-- See `docs/CURSOR_REQUIREMENTS.md` for details
+Codex reads from `~/.codex/AGENTS.md`, which points at `~/.codex/rules/CLAUDE.md` for the universal contract. Both are symlinks created by the sync script.
 
 ## Adding New Files
 
-1. Add file to repository:
-   ```bash
-   # Add new command
-   cp new-command.md ~/.agents-config/commands/
-   
-   # Add new agent
-   cp new-agent.md ~/.agents-config/agents/
-   ```
-
+1. Add files to the repository (e.g. a new local skill in `skills/`).
 2. Sync to IDEs:
    ```bash
    python3 sync-to-ides.py
    ```
-
-3. Commit changes:
-   ```bash
-   git add commands/new-command.md
-   git commit -m "Add new-command"
-   ```
+3. Commit changes.
 
 ## Updating Existing Files
 
@@ -151,8 +134,7 @@ This checks:
 
 ## Best Practices
 
-1. **Always edit in repo** - Never edit files directly in `~/.claude/` or `~/.cursor/`
+1. **Always edit in repo** - Never edit files directly in `~/.claude/` or `~/.codex/`
 2. **Commit frequently** - Keep repo in sync with git
 3. **Verify after changes** - Run `--verify` after setup
-4. **Document additions** - Update `docs/FORMATS.md` when adding new file types
 
