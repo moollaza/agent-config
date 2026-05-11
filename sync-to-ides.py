@@ -5,9 +5,9 @@ Sync agents-config repository to Claude Code and Codex.
 Creates symlinks FROM ~/.claude/ and ~/.codex/ TO this repo, making the repo
 the source of truth. Warns before overwriting existing files.
 
-Codex's `~/.codex/AGENTS.md` is a small tool-map file; it instructs Codex to
-also read `~/.codex/CLAUDE.md` (which symlinks to the same universal contract
-Claude Code reads at `~/.claude/CLAUDE.md`).
+The single source of truth is `AGENTS.md` — the cross-agent standard. Claude
+Code finds it under its expected `CLAUDE.md` filename via symlink; Codex finds
+it natively as `AGENTS.md`.
 """
 
 import argparse
@@ -18,10 +18,9 @@ from pathlib import Path
 # - claude_dest: path under HOME for Claude Code (None to skip)
 # - codex_dest:  path under HOME for Codex (None to skip)
 SYNC_MAPPINGS = [
-    # Universal contract — same source, exposed to both agents
-    ('CLAUDE.md', '.claude/CLAUDE.md', '.codex/CLAUDE.md'),
-    # Codex tool-map — Codex-only
-    ('AGENTS.md', None, '.codex/AGENTS.md'),
+    # Universal contract — one file in the repo (AGENTS.md), surfaced to both agents
+    # under their respective conventional filenames.
+    ('AGENTS.md', '.claude/CLAUDE.md', '.codex/AGENTS.md'),
     ('scripts/statusline-command.sh', '.claude/statusline-command.sh', None),
     # Skills: each subdir of skills/ gets its own symlink (added dynamically)
 ]
