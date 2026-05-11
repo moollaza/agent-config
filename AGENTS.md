@@ -11,3 +11,23 @@
 9/ PRs: use `.github/PULL_REQUEST_TEMPLATE.md` if present. Otherwise: Summary / Changes / Why / How to verify (what you ran + what you didn't) / What to look for (regressions, edge cases, UX states). Reference the Linear issue id. No marketing language.
 10/ For UI bugs, scan the same component for adjacent issues (dismiss path, contrast, mobile, keyboard) and fix them in the same change.
 11/ Linear MCP (Matt Pocock skills read this): tracker `mcp__linear-server__*`, team "Side Projects" (`ZPR`); pick project matching repo from `mcp__linear-server__list_projects`. Labels: `Bug`/`Feature`/`Improvement`/`Chore` + `triage:needs-triage`/`needs-info`/`ready-for-agent`/`ready-for-human`/`wontfix`. Use real newlines in markdown.
+
+<!-- BEGIN COMPOUND CODEX TOOL MAP -->
+## Compound Codex Tool Mapping (Claude Compatibility)
+
+For Codex only. Other agents can skip this section. Auto-managed by the Compound Engineering plugin.
+
+- Read: `cat`/`sed` or `rg`
+- Write: shell redirection or `apply_patch`
+- Edit/MultiEdit: `apply_patch`
+- Bash: `shell_command`
+- Grep: `rg` (fallback: `grep`)
+- Glob: `rg --files` or `find`
+- LS: `ls` via `shell_command`
+- WebFetch/WebSearch: `curl` or Context7
+- AskUserQuestion: numbered list, wait for reply. Multi-select = comma-separated.
+- Task/Subagent/Parallel: sequential in main thread; `multi_tool_use.parallel` for tool calls.
+- TodoWrite/TodoRead: file-based todos in `todos/`.
+- Skill: open referenced `SKILL.md`.
+- ExitPlanMode: ignore.
+<!-- END COMPOUND CODEX TOOL MAP -->

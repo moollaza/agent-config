@@ -5,7 +5,7 @@ Centralized configuration repository for Claude Code and Codex.
 ## Overview
 
 Single source of truth for:
-- Assistant rules — `rules/CLAUDE.md` (Claude Code) and `rules/AGENTS.md` (Codex)
+- Assistant rules — `AGENTS.md` (the cross-agent standard, read by Claude Code, Codex, and any other AGENTS.md-supporting agent)
 - Local skills (`skills/`) and external skill registry (`plugins.json`)
 
 Files are symlinked into IDE directories — never edit `~/.claude/` or `~/.codex/` paths directly.
@@ -43,24 +43,25 @@ python3 sync-to-ides.py
 
 ```
 .agents-config/
-├── rules/           # Assistant rules (Claude uses CLAUDE.md)
+├── AGENTS.md        # The contract — cross-agent standard
 ├── skills/          # Local skills (synced via symlinks)
 ├── plugins.json     # External skills/plugins registry (installed, not stored)
 ├── docs/            # Documentation
 └── scripts/         # Utility scripts
 ```
 
+`AGENTS.md` is the [cross-agent standard](https://www.aihero.dev/a-complete-guide-to-agents-md) — Codex and other AGENTS.md-aware agents read it natively. Claude Code uses `CLAUDE.md` as its filename, so the sync script creates `~/.claude/CLAUDE.md` as a symlink to `AGENTS.md`.
+
 ## Syncing
 
 `sync-to-ides.py` creates symlinks from IDE directories to this repo, and removes any stale symlinks whose source has been deleted.
 
 **Claude Code (`~/.claude/`):**
-- `CLAUDE.md` → `rules/CLAUDE.md`
+- `CLAUDE.md` → repo `AGENTS.md` (Claude reads it under its expected filename)
 - `skills/<each>` → matching repo paths
 
 **Codex (`~/.codex/`):**
-- `AGENTS.md` → `rules/AGENTS.md` (Codex tool-map; instructs Codex to read `~/.codex/rules/CLAUDE.md` for the universal contract)
-- `rules/CLAUDE.md` → `rules/CLAUDE.md` (the universal contract, mirrored)
+- `AGENTS.md` → repo `AGENTS.md`
 
 ## Usage
 
@@ -68,7 +69,7 @@ python3 sync-to-ides.py
 # Preview changes
 python3 sync-to-ides.py --dry-run
 
-# Apply (default targets all: claude + codex + cursor)
+# Apply (default targets both Claude Code and Codex)
 python3 sync-to-ides.py
 
 # Force overwrite (replaces real files with symlinks)
@@ -102,12 +103,15 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 ## IDE-Specific Notes
 
 ### Claude Code
-- Reads `~/.claude/CLAUDE.md` for global rules (the 11-bullet contract).
+- Reads `~/.claude/CLAUDE.md` (symlinked to repo `AGENTS.md`) for global rules — the 11-bullet contract.
 - Reads `skills/` directory.
 
 ### Codex
-- Reads `~/.codex/AGENTS.md` first — small file that points at `~/.codex/rules/CLAUDE.md` for the universal contract.
-- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block in `rules/AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
+- Reads `~/.codex/AGENTS.md` (symlinked to repo `AGENTS.md`) for global rules.
+- The `<!-- BEGIN COMPOUND CODEX TOOL MAP -->` block inside `AGENTS.md` is auto-managed by the Compound Engineering plugin and translates Claude Code tool names to Codex equivalents.
+
+### Other agents (Cursor, etc.)
+- Any agent that reads the AGENTS.md cross-agent standard picks up the same contract natively.
 
 ## Documentation
 
