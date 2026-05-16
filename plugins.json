@@ -29,7 +29,7 @@
     {
       "name": "setup-matt-pocock-skills",
       "source": "mattpocock/skills",
-      "description": "Bootstrap per-repo issue-tracker config for to-prd / to-issues / triage / etc. (Matt Pocock). Note: only knows GitHub + local-md natively; we override with Linear MCP via the Agent Skills block in CLAUDE.md.",
+      "description": "Bootstrap per-repo issue-tracker config for to-prd / to-issues / triage / etc. (Matt Pocock).",
       "install": "npx skills add mattpocock/skills -g -a claude-code -s setup-matt-pocock-skills -y"
     },
     {
