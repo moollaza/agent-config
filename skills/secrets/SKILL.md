@@ -185,18 +185,20 @@ Installed 2026-05-16 as the runtime broker for autonomous agent work. **Infisica
 
 Currently piloting (Phase 1) on `fathom-analytics-key`. Higher-stakes tokens (CF write, Supabase service_role, Supabase management) graduate behind it after each phase proves stable.
 
-### Running state on this laptop
+### Install + run
 
-| | |
-| --- | --- |
-| Binary | `/usr/local/bin/agent-vault` (v0.20.1+; install via `curl --proto '=https' --proto-redir '=https' --tlsv1.2 -fsSL https://get.agent-vault.dev \| AGENT_VAULT_NO_TELEMETRY=1 sh`) |
-| Server lifecycle | `AGENT_VAULT_MASTER_PASSWORD="$(secret get agent-vault-master-password)" agent-vault server -d` |
-| Ports | `127.0.0.1:14321` mgmt API, `127.0.0.1:14322` TLS-MITM proxy (both bind localhost-only) |
-| Owner account | personal email (`git config user.email`), password in `agent-vault-account-password` |
-| Master password (encryption-at-rest) | `agent-vault-master-password` in keychain |
-| Vault | `personal` |
-| Member-role agent identity | `vault-writer-v2`, long-lived token in `agent-vault-writer-token` |
-| Data dir | `~/.agent-vault/` (SQLite + `mitm-ca.pem` + `server.log`) |
+```sh
+# One-time install (single Go binary)
+curl --proto '=https' --proto-redir '=https' --tlsv1.2 -fsSL https://get.agent-vault.dev \
+  | AGENT_VAULT_NO_TELEMETRY=1 sh
+
+# Server lifecycle — production setup wraps this in a LaunchAgent (see below)
+AGENT_VAULT_MASTER_PASSWORD="$(secret get agent-vault-master-password)" agent-vault server -d
+```
+
+Listens on `127.0.0.1:14321` (mgmt + web UI) and `127.0.0.1:14322` (TLS-MITM proxy). Data dir is `~/.agent-vault/` (SQLite + `mitm-ca.pem` + `server.log`). Keychain dependencies: `agent-vault-master-password` (DB encryption-at-rest), `agent-vault-account-password` (owner account), `agent-vault-writer-token` (member-role agent token for credential writes).
+
+Durable across reboots: install a `LaunchAgent` plist that runs a wrapper script which sources the master password from Keychain at boot. The wrapper at `~/.local/bin/agent-vault-launchd-runner` and plist at `~/Library/LaunchAgents/com.infisical.agent-vault.plist` are the canonical pair; check or restart with `launchctl print gui/$UID/com.infisical.agent-vault`.
 
 ### How to use it
 
@@ -319,25 +321,13 @@ Once migrated, remove any `op://` references from `.dev.vars.tpl` / scripts and 
 
 ## Sandbox detection (Claude Desktop, web/Cowork, container CI)
 
-The `secret` wrapper requires the user's local macOS Keychain. Sandboxed surfaces — Claude Desktop, Claude Code on web/Cowork, sandboxed CI, any container that doesn't mount `$HOME` — **cannot reach it**.
-
-**Pre-check before the first credential-bearing step:**
+Sandboxed surfaces can't reach the local Keychain. Pre-check before the first credential-bearing step:
 
 ```sh
 [ -x ~/.local/bin/secret ] || echo "SANDBOX: secret wrapper unreachable"
 ```
 
-If the check trips, do **not**:
-
-- Retry, hope, or fall back to a different store.
-- Ask the user to paste the credential into chat. Chat transcripts persist, get screenshotted, and end up in eval datasets. Pasted secrets must be rotated.
-- Improvise an alternate flow that skips authentication.
-
-Instead:
-
-1. **Name the exact secret needed** — e.g. "I need `secret get cloudflare-api-token` to push the worker."
-2. **Offer two paths**: (a) the user elevates permissions / mounts `$HOME` and you rerun, or (b) the user runs the gated step locally and reports back the result (status code, output without the token).
-3. **If neither is feasible, mark the work as blocked.** Better a clear stop than a half-deployed worker with a bad token.
+If it trips: name the exact secret needed (`secret get <name>`), offer to either let the user run the gated step locally and report status, or mark the work blocked. **Never** ask the user to paste the credential into chat — transcripts persist, get screenshotted, end up in eval datasets, pasted secrets must be rotated. Never improvise an alternate flow that skips authentication.
 
 ## Working with the auto-mode classifier
 
