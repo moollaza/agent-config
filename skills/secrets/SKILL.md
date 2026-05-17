@@ -213,7 +213,9 @@ agent-vault vault run --vault personal -- bun -e '
 
 ### Adding a new service + credential
 
-Two-identity dance (admin defines the shape, member writes the value):
+**One-shot wrapper** (~/.local/bin/av-add, local-only): `av-add <service-name> <host> <key-name> <keychain-source>` runs the admin step + member step + verify in one call. Example: `av-add resend api.resend.com RESEND_API_KEY resend-api-key`. Optional `AV_VAULT` and `AV_AUTH_TYPE` env vars override defaults.
+
+Manual two-identity dance (admin defines the shape, member writes the value):
 
 ```sh
 # 1. Admin (your CLI session) — define the service in the vault
