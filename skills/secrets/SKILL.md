@@ -107,6 +107,7 @@ kebab-case, descriptive, no prefix. Run `secret list` for the authoritative set 
 | `plane-api-key`                            | Plane.so issue-tracker PAT                                                    |
 | `reporemover-dev-token`                    | RepoRemover dev environment token                                             |
 | `resend-api-key`                           | Resend transactional email API key                                            |
+| `sentry-pat`                               | Sentry personal access token (org-scoped, for CLI + release uploads)          |
 | `supabase-choosetwo-api-secret`            | Supabase service_role JWT for the choose-two project                          |
 | `supabase-management-token`                | Supabase Management API access token (org-scoped)                             |
 
@@ -114,7 +115,6 @@ Wrangler also has its own OAuth state at `~/.wrangler/config/default.toml` (inde
 
 **Notable absences** — referenced in docs but not yet in the wrapper:
 
-- `sentry-pat` — install when next needed; not currently in `op://Developer` either.
 - `cloudflare-r2-access-key-id` / `cloudflare-r2-secret-access-key` — needed by OpenTofu R2 backend per `project-hub/infra/cloudflare/README.md`. The old 1Password item that held these was deleted; regenerate via Cloudflare dashboard (R2 → Manage R2 API Tokens) when the R2 OpenTofu flow is next exercised.
 
 ### Registry vs keychain — `secret list` may understate reality
