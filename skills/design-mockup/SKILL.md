@@ -154,43 +154,30 @@ CDN with the extracted project tokens.
 
 ### Phase 4: Choose the Right Viewer Layout
 
-The viewer layout should match what's being reviewed. Pick the right treatment
-or combine them.
+Two defaults cover most cases. Compose other variants (filmstrips, flow
+storyboards) only when the work clearly demands them.
 
-#### Tabbed States
+#### Tabbed States + Desktop/Mobile Toggle (default)
 
-Best for: **coverage mode with 5+ states.**
+Best for: **coverage mode** — the standard combination for state review.
 
-Generate a single HTML file with tabs across the top — one tab per state. Each
-tab shows that state's full mockup. The active tab is highlighted. Clicking a
+Generate a single HTML file with tabs across the top, one tab per state, with
+the active tab highlighted and a small pill badge showing the state name. Each
 tab swaps the visible content without page navigation.
 
-This keeps all states in one place and makes rapid comparison easy. Add a small
-pill badge on each tab showing state name (e.g., "Idle", "Active", "Error").
+Inside the tab shell, add a sticky toggle bar with buttons: "Desktop (1280px)"
+/ "Tablet (768px)" / "Mobile (375px)". Clicking resizes the content container
+to that width, centered on the page.
 
-Use this as the default layout when the user asks for coverage/exhaustive review.
-
-#### Desktop / Mobile Toggle
-
-Best for: **reviewing responsive behavior of a single state.**
-
-Add a sticky toggle bar at the top with buttons: "Desktop (1280px)" / "Tablet
-(768px)" / "Mobile (375px)". Clicking a button resizes the content iframe or
-container to that width, centered on the page. The current selection is
-highlighted.
-
-Include this toggle in EVERY mockup page by default — responsive behavior
-should always be one click away.
-
-**Important:** Each breakpoint must render the real responsive variant, not just
-a resized container. At mobile width, show the mobile nav (hamburger/drawer),
-mobile typography scale, and mobile layout. At tablet, show tablet-specific
-patterns. Read the project's responsive classes and media queries to understand
-what actually changes at each breakpoint.
+**Important:** Each breakpoint must render the real responsive variant, not
+just a resized container. At mobile width, show the mobile nav
+(hamburger/drawer), mobile typography scale, and mobile layout. Read the
+project's responsive classes and media queries to understand what actually
+changes at each breakpoint.
 
 #### Side-by-Side Options
 
-Best for: **choosing between design directions.**
+Best for: **options mode** — choosing between design directions.
 
 Generate one HTML file with 2-3 alternatives rendered in columns. Each column
 has a header with the option name and a brief rationale card explaining the
@@ -200,41 +187,6 @@ scroll if needed rather than cramming.
 Below the columns, include a "Differences" summary listing the specific design
 decisions that vary between options (e.g., "Option A uses `rounded-md` buttons,
 Option B uses `rounded-lg`").
-
-#### Responsive Filmstrip
-
-Best for: **catching responsive issues at a glance across multiple states.**
-
-Render the same state at 3 breakpoints (mobile, tablet, desktop) as scaled
-panels in a single row. Stack multiple states vertically. This creates a grid:
-states x breakpoints.
-
-Use this when the user specifically asks to verify responsive behavior across
-all states, or when responsive consistency is the primary concern.
-
-#### Flow Storyboard
-
-Best for: **multi-step interactions** (setup wizards, confirm dialogs, form
-flows).
-
-Render each step as a card in a horizontal scrollable row, connected by arrows
-labeled with the triggering action ("Click Submit" -> "Loading..." ->
-"Success"). This shows the entire flow in one view.
-
-#### Combining Layouts
-
-Layouts can be nested. The most common combination:
-
-- **Tabbed states** as the outer shell (one tab per state)
-- **Desktop/mobile toggle** inside each tab
-
-Or for options:
-
-- **Side-by-side options** as the outer shell
-- **Desktop/mobile toggle** for each option
-
-Pick the combination that serves what's being reviewed. When in doubt, use
-tabbed states with a desktop/mobile toggle — it covers most cases well.
 
 ### Phase 5: Build the Index
 
@@ -249,20 +201,10 @@ Keep it clean — this is the first thing the user sees.
 
 ### Phase 6: A11y Quick Audit
 
-Add a toggleable overlay to each mockup (small button in the corner: "A11y
-Check"). When activated, it:
-
-- Highlights elements with contrast ratios below WCAG AA (4.5:1 for text, 3:1
-  for large text/icons) with a red outline and the ratio displayed
-- Flags hardcoded non-token colors (e.g., arbitrary hex values instead of named
-  tokens)
-- Shows tap target sizes for interactive elements
-
-This is best-effort, not a replacement for axe-core — but catching obvious
-contrast failures during design review is free.
-
-Implement as a small inline script that walks the DOM and adds overlay
-annotations. Keep it simple.
+Add a small corner toggle ("A11y Check") that overlays the page with: red
+outlines on elements below WCAG AA contrast (4.5:1 text, 3:1 large/icons),
+flags on hardcoded non-token colors, tap-target size labels. Best-effort, not
+a replacement for axe-core. Keep the implementation a single inline script.
 
 ### Phase 7: Serve & Present
 
@@ -309,35 +251,11 @@ them. See Phase 9.
 
 ### Phase 9: Implementation Handoff
 
-The mockup HTML files are the source of truth for what was approved. Before
-writing any production code, you **must** re-read the approved mockup source
-files to extract the exact design details.
-
-**Step 1: Read every approved mockup file.** Use the Read tool on each `.html`
-file in `.mockups/`. Do not rely on memory or screenshots — read the actual
-HTML source.
-
-**Step 2: Extract the design spec.** From the mockup source, pull out:
-
-- **Structure:** The DOM hierarchy — what wraps what, flex/grid layout
-  decisions, container nesting
-- **Classes:** The exact Tailwind classes used for each element — spacing,
-  colors, typography, border-radius, shadows
-- **Tokens:** Any project-specific tokens from the `tailwind.config` block
-- **Content:** Labels, placeholder text, button copy, headings
-- **Interactive states:** What changes on hover, click, expand/collapse
-- **Responsive behavior:** How the layout adapts across breakpoints
-
-**Step 3: Implement from the spec, not from vibes.** When writing the real
-components, reference the mockup source directly. If the mockup uses
-`gap-4 p-6 rounded-xl border border-gray-200` on a card, the production card
-should use those same classes (or the project's equivalent component). Don't
-approximate — match.
-
-**If a different agent handles implementation:** When handing off to another
-agent or conversation, explicitly state that the `.mockups/` directory contains
-approved HTML mockups and the implementing agent must read them before writing
-code. Include the file paths in the handoff.
+Before implementing, re-read the approved `.mockups/*.html` files (Read tool,
+not memory). Extract DOM hierarchy, exact Tailwind classes, project tokens,
+content/copy, interactive states, and responsive behavior. If a different
+agent handles implementation, include the file paths in the handoff and state
+explicitly that `.mockups/` is the source of truth. Don't approximate.
 
 ## Tips
 

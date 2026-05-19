@@ -18,14 +18,13 @@ Zaahir's CLI-accessible project secrets live in **macOS Keychain**, accessed thr
 
 Context: This replaced 1Password for the CLI path on 2026-05-11. 1Password's biometric-only mode prompts Touch ID per `op` invocation — parallel agent reads of three different secrets produced three prompts every time, with no session-token escape hatch. 1Password remains for browser fills and mobile; it is not the source of truth for anything an agent or CLI tool consumes.
 
-## The four credential paths
+## The three credential paths
 
 Pick the right path before you do anything:
 
 1. **`secret get <name>`** — the default. macOS Keychain entry written by the wrapper (`service=<name>, account=$USER`). Use for any token that has to be piped to a non-Cloudflare CLI, or for Cloudflare account-API tokens you want to keep portable across machines / agents.
 2. **`wrangler login` OAuth** — Cloudflare-only flows on this machine. State lives at `~/.wrangler/config/default.toml` and auto-refreshes. Broader scope than a hand-minted account token, no keychain entry. Prefer this when the work is Wrangler-only (Workers secrets, KV, R2, D1, Pages) and you don't need the token from a non-Wrangler tool. See [Cloudflare auth: keychain token vs wrangler OAuth](#cloudflare-auth-keychain-token-vs-wrangler-oauth).
 3. **`security find-generic-password -s <service> -a <account> -w`** — pre-existing keychain entries that don't use the wrapper's `account=$USER` convention. `secret has` returns false on these; reading them via the wrapper silently fails. See [Pre-existing non-wrapper entries](#pre-existing-non-wrapper-entries).
-4. **1Password (`op`)** — only for bootstrapping a missing keychain entry from the Developer vault, then migrating it. Not a runtime source. See [Bootstrap from 1Password](#bootstrap-from-1password).
 
 ## The `secret` wrapper
 
@@ -217,24 +216,6 @@ security find-generic-password -s "<service>" -a "<account>" -w | secret put <ke
 security delete-generic-password -s "<service>" -a "<account>"
 ```
 
-## Bootstrap from 1Password
-
-Fastest path when a needed `secret get <name>` returns empty and the value lives in 1Password's Developer vault. One Touch ID prompt per item.
-
-```sh
-# Discover by partial title (you usually don't remember the exact title)
-op item list --vault Developer --format=json \
-  | jq -r '.[] | select(.title|test("(?i)resend")) | "\(.id) \(.title)"'
-
-# Migrate
-op read 'op://Developer/<title-or-id>/password' | secret put <kebab-case-name>
-
-# Verify it landed and is live (see "Verify before push")
-secret has <kebab-case-name> && echo present
-```
-
-Once migrated, remove any `op://` references from `.dev.vars.tpl` / scripts and point them at the keychain name instead. 1Password stays as the cold-storage backup; the keychain entry is the runtime source.
-
 ## Sandbox detection (Claude Desktop, web/Cowork, container CI)
 
 The `secret` wrapper requires the user's local macOS Keychain. Sandboxed surfaces — Claude Desktop, Claude Code on web/Cowork, sandboxed CI, any container that doesn't mount `$HOME` — **cannot reach it**.
@@ -316,11 +297,6 @@ sync-worker-secrets choose-two-api .dev.vars.tpl
 
 Exit codes: `64` usage, `65` missing keychain entry, `66` unreadable template. Read the source at `~/.local/bin/sync-worker-secrets` to customize (e.g. swap `bunx wrangler` for plain `wrangler`).
 
-## Hard rules
+## Hard rules — see AGENTS.md rule 9.
 
-- **Never** echo a resolved secret value, even for "diagnostics." Verify with provider liveness curls (see [Verify before push](#verify-before-push)) or `secret get x | wc -c` for shape checks.
-- **Never** write secret values to disk except as committed `.dev.vars.tpl`-style templates pointing at keychain names — never values.
-- **Never** assign to an env var with `export` that persists beyond the immediate command, unless intentional and scoped.
-- **Never** add CLI-callable items to 1Password going forward. If a tool needs an env var, it goes in keychain. 1Password is bootstrap-only.
-- **Never** paste a secret into chat. If a sandbox blocks `secret get`, mark the work blocked and surface the exact command the user should run locally.
-- During `secret put`, the value is briefly visible in the process listing (macOS `security` CLI limitation). Single-user laptop only.
+One detail not in the contract: during `secret put`, the value is briefly visible in the macOS process listing (`security` CLI limitation). Single-user laptop only.
