@@ -112,7 +112,3 @@ To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`
 
 ### Other agents (Cursor, etc.)
 - Any agent that reads the AGENTS.md cross-agent standard picks up the same contract natively.
-
-## Documentation
-
-- `docs/SETUP.md` - Detailed setup guide
