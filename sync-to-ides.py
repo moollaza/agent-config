@@ -33,13 +33,6 @@ REPO_DIR = Path(__file__).resolve().parent
 CLAUDE_DIR = HOME / '.claude'
 CODEX_DIR = HOME / '.codex'
 
-# Files/directories to preserve in IDE directories (Claude-specific)
-CLAUDE_IGNORE = {
-    'debug', 'file-history', 'history.jsonl', 'ide', 'plugins',
-    'projects', 'shell-snapshots', 'statsig',
-    'todos', 'session-env', 'settings.json'
-}
-
 
 def _discover_skills(repo_dir):
     """Auto-discover skill directories and add them to SYNC_MAPPINGS."""
@@ -54,10 +47,7 @@ def _discover_skills(repo_dir):
 
 
 def create_symlink(source, target, force=False, dry_run=False):
-    """Create symlink from source to target, handling existing links/files.
-
-    Preserves IDE-specific files when removing directories in .claude.
-    """
+    """Create symlink from source to target, handling existing links/files."""
     source = Path(source)
     target = Path(target)
 
@@ -91,22 +81,15 @@ def create_symlink(source, target, force=False, dry_run=False):
         if not force:
             print(f"    Use --force to overwrite")
             return False
-        print(f"  ♻ Removing existing file/directory: {target}")
+        # Every SYNC_MAPPINGS target is a file or symlink — never a real
+        # directory — so we don't need directory-preservation logic. If a
+        # user has somehow replaced a target with a directory by hand,
+        # --force should refuse rather than silently rmtree.
         if target.is_dir():
-            import shutil
-            preserve_items = []
-            for item in target.iterdir():
-                if item.name in CLAUDE_IGNORE:
-                    preserve_items.append((item, target.parent / item.name))
-                    print(f"    Preserving IDE file: {item.name}")
-
-            shutil.rmtree(target)
-
-            for src, dst in preserve_items:
-                if src.exists():
-                    shutil.move(str(src), str(dst))
-        else:
-            target.unlink()
+            print(f"  ✗ Refusing to --force overwrite a real directory: {target}")
+            return False
+        print(f"  ♻ Removing existing file: {target}")
+        target.unlink()
 
     target.parent.mkdir(parents=True, exist_ok=True)
 
@@ -117,32 +100,6 @@ def create_symlink(source, target, force=False, dry_run=False):
     except OSError as e:
         print(f"  ✗ Failed to create symlink: {e}")
         return False
-
-
-def _cleanup_stale_symlinks(dry_run=False):
-    """Remove broken IDE-side symlinks whose source has been deleted from the repo.
-
-    Covers `~/.claude/skills/` (a removed skill leaves a dangling symlink) and
-    `~/.claude/rules/` / `~/.codex/rules/` (historical topic-file locations
-    that may still hold dangling symlinks from before they were flattened).
-    """
-    for ide_dir in (CLAUDE_DIR / 'rules', CODEX_DIR / 'rules', CLAUDE_DIR / 'skills'):
-        if not ide_dir.is_dir():
-            continue
-        for entry in ide_dir.iterdir():
-            if not entry.is_symlink():
-                continue
-            try:
-                target = entry.readlink()
-            except OSError:
-                continue
-            resolved = (entry.parent / target).resolve() if not target.is_absolute() else target.resolve()
-            if not resolved.exists():
-                if dry_run:
-                    print(f"  ♻ Would remove stale symlink: {entry} -> {target}")
-                else:
-                    print(f"  ♻ Removing stale symlink: {entry} -> {target}")
-                    entry.unlink()
 
 
 def _check_one_symlink(label, target, source):
@@ -206,8 +163,6 @@ def main():
     if args.verify:
         valid = verify_symlinks(args.ide)
         sys.exit(0 if valid else 1)
-
-    _cleanup_stale_symlinks(args.dry_run)
 
     print(f"Syncing from {REPO_DIR} to IDE directories...")
     print("=" * 60)
