@@ -36,30 +36,51 @@ fi
 echo ""
 echo "External skills/plugins"
 echo "======================================"
-if [ -f "$SCRIPT_DIR/plugins.json" ]; then
-    PLUGIN_COUNT=$(python3 -c "import json; print(len(json.load(open('$SCRIPT_DIR/plugins.json'))['plugins']))")
-    echo "Found $PLUGIN_COUNT external item(s) in plugins.json:"
-    python3 -c "
+if [ -f plugins.json ]; then
+    # Heredoc with single-quoted delimiter — no shell or Python interpolation.
+    # plugins.json is read via relative path because we cd'd to SCRIPT_DIR above.
+    python3 <<'PY'
 import json
-plugins = json.load(open('$SCRIPT_DIR/plugins.json'))['plugins']
+plugins = json.load(open('plugins.json'))['plugins']
+print(f"Found {len(plugins)} external item(s) in plugins.json:")
+print()
 for p in plugins:
-    print(f\"  - {p['name']}: {p['description']}\")
-"
+    print(f"  - {p['name']}: {p['description']}")
+    print(f"      $ {p['install']}")
+PY
     echo ""
     read -p "Install external skills/plugins? (y/N): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        python3 -c "
-import json, subprocess, sys
-plugins = json.load(open('$SCRIPT_DIR/plugins.json'))['plugins']
+        # shell=True is unsafe — install strings come from a JSON file that
+        # could be tampered with via a malicious PR. Parse with shlex, enforce
+        # the command is `npx skills ...`, then call subprocess.run with an
+        # argv list (no shell). Per-plugin failures are non-fatal.
+        python3 <<'PY'
+import json, shlex, subprocess, sys
+
+plugins = json.load(open('plugins.json'))['plugins']
+
 for p in plugins:
-    print(f\"Installing {p['name']}...\")
-    result = subprocess.run(p['install'], shell=True, capture_output=True, text=True)
+    name = p['name']
+    install = p['install']
+    try:
+        argv = shlex.split(install)
+    except ValueError as e:
+        print(f"  ✗ {name} skipped: cannot parse install command ({e})", file=sys.stderr)
+        continue
+
+    if len(argv) < 2 or argv[0] != 'npx' or argv[1] != 'skills':
+        print(f"  ✗ {name} skipped: install must start with `npx skills` (got: {install!r})", file=sys.stderr)
+        continue
+
+    print(f"Installing {name}...")
+    result = subprocess.run(argv, capture_output=True, text=True)
     if result.returncode == 0:
-        print(f\"  ✓ {p['name']} installed\")
+        print(f"  ✓ {name} installed")
     else:
-        print(f\"  ✗ {p['name']} failed: {result.stderr.strip()}\", file=sys.stderr)
-"
+        print(f"  ✗ {name} failed: {result.stderr.strip()}", file=sys.stderr)
+PY
     else
         echo "External install skipped."
     fi
