@@ -20,3 +20,6 @@ Thumbs.db
 # Local-only rules (contain workplace-internal terminology — never commit to public repo)
 rules/asana-data-protection.md
 
+# /ce:brainstorm and similar workflow outputs — design history doesn't belong in this repo
+docs/
+
