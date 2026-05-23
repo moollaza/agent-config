@@ -2,12 +2,15 @@
 name: secrets
 description: >
   Find, reference, and use project credentials stored in macOS Keychain via
-  the `secret` wrapper, or via `wrangler login` OAuth for Cloudflare-only
-  flows. Use when handling API keys, OAuth credentials, Cloudflare/Worker
-  secrets (including versioned `wrangler versions secret put` rollouts via
-  `sync-worker-secrets`), or any token-bearing call. Triggers on "secret",
-  "API key", "credential", "Keychain", "wrangler secret", "wrangler login",
-  "sync-worker-secrets", "rotate token", ".dev.vars", "1Password migration",
+  the `secret` wrapper, via `wrangler login` OAuth for Cloudflare-only flows,
+  or via Infisical Agent Vault for agent runs where the bearer should never
+  cross into the agent's process. Use when handling API keys, OAuth
+  credentials, Cloudflare/Worker secrets (including versioned `wrangler
+  versions secret put` rollouts via `sync-worker-secrets`), or any
+  token-bearing call. Triggers on "secret", "API key", "credential",
+  "Keychain", "wrangler secret", "wrangler login", "sync-worker-secrets",
+  "rotate token", ".dev.vars", "1Password migration", "agent-vault",
+  "Infisical Agent Vault", "phantom token", "credential broker",
   "auto-mode classifier" credential friction. 1Password is no longer in the
   CLI path.
 ---
@@ -25,6 +28,8 @@ Pick the right path before you do anything:
 1. **`secret get <name>`** — the default. macOS Keychain entry written by the wrapper (`service=<name>, account=$USER`). Use for any token that has to be piped to a non-Cloudflare CLI, or for Cloudflare account-API tokens you want to keep portable across machines / agents.
 2. **`wrangler login` OAuth** — Cloudflare-only flows on this machine. State lives at `~/.wrangler/config/default.toml` and auto-refreshes. Broader scope than a hand-minted account token, no keychain entry. Prefer this when the work is Wrangler-only (Workers secrets, KV, R2, D1, Pages) and you don't need the token from a non-Wrangler tool. See [Cloudflare auth: keychain token vs wrangler OAuth](#cloudflare-auth-keychain-token-vs-wrangler-oauth).
 3. **`security find-generic-password -s <service> -a <account> -w`** — pre-existing keychain entries that don't use the wrapper's `account=$USER` convention. `secret has` returns false on these; reading them via the wrapper silently fails. See [Pre-existing non-wrapper entries](#pre-existing-non-wrapper-entries).
+
+Orthogonal to the four sources above, **Agent Vault** is the *runtime broker*: agent makes the API call, broker injects auth, agent never sees the bearer. Feed it from any of the four sources at startup. See [Agent Vault — phantom-token broker](#agent-vault--phantom-token-broker-for-agent-runs).
 
 ## The `secret` wrapper
 
@@ -101,6 +106,7 @@ kebab-case, descriptive, no prefix. Run `secret list` for the authoritative set 
 | `plane-api-key`                            | Plane.so issue-tracker PAT                                                    |
 | `reporemover-dev-token`                    | RepoRemover dev environment token                                             |
 | `resend-api-key`                           | Resend transactional email API key                                            |
+| `sentry-pat`                               | Sentry personal access token (org-scoped, for CLI + release uploads)          |
 | `supabase-choosetwo-api-secret`            | Supabase service_role JWT for the choose-two project                          |
 | `supabase-management-token`                | Supabase Management API access token (org-scoped)                             |
 
@@ -108,7 +114,6 @@ Wrangler also has its own OAuth state at `~/.wrangler/config/default.toml` (inde
 
 **Notable absences** — referenced in docs but not yet in the wrapper:
 
-- `sentry-pat` — install when next needed; not currently in `op://Developer` either.
 - `cloudflare-r2-access-key-id` / `cloudflare-r2-secret-access-key` — needed by OpenTofu R2 backend per `project-hub/infra/cloudflare/README.md`. The old 1Password item that held these was deleted; regenerate via Cloudflare dashboard (R2 → Manage R2 API Tokens) when the R2 OpenTofu flow is next exercised.
 
 ### Registry vs keychain — `secret list` may understate reality
@@ -173,6 +178,85 @@ If a `cloudflare-api-token` keychain entry starts with `cfut_`, it's the wrong k
 
 `wrangler whoami` reporting `Failed to fetch auth token: 400 Bad Request` means the cached OAuth refresh token has been rejected (revoked-elsewhere, server-side invalidated, clock skew). Don't fight the cache — re-run `wrangler login`. There is no useful `wrangler logout`-then-retry incantation that's faster.
 
+## Agent Vault — phantom-token broker for agent runs
+
+Installed 2026-05-16 as the runtime broker for autonomous agent work. **Infisical Agent Vault** ([`agent-vault`](https://github.com/Infisical/agent-vault), MIT, single Go binary). Agent makes an HTTPS call to e.g. `api.usefathom.com`; a local TLS-MITM proxy intercepts, matches the host to a vault `service`, looks up the credential by `--token-key`, injects `Authorization: Bearer <value>`, forwards upstream. **The agent's process never holds the bearer.**
+
+Currently piloting (Phase 1) on `fathom-analytics-key`. Higher-stakes tokens (CF write, Supabase service_role, Supabase management) graduate behind it after each phase proves stable.
+
+### Install + run
+
+```sh
+# One-time install (single Go binary)
+curl --proto '=https' --proto-redir '=https' --tlsv1.2 -fsSL https://get.agent-vault.dev \
+  | AGENT_VAULT_NO_TELEMETRY=1 sh
+
+# Server lifecycle — production setup wraps this in a LaunchAgent (see below)
+AGENT_VAULT_MASTER_PASSWORD="$(secret get agent-vault-master-password)" agent-vault server -d
+```
+
+Listens on `127.0.0.1:14321` (mgmt + web UI) and `127.0.0.1:14322` (TLS-MITM proxy). Data dir is `~/.agent-vault/` (SQLite + `mitm-ca.pem` + `server.log`). Keychain dependencies: `agent-vault-master-password` (DB encryption-at-rest), `agent-vault-account-password` (owner account), `agent-vault-writer-token` (member-role agent token for credential writes).
+
+Durable across reboots: install a `LaunchAgent` plist that runs a wrapper script which sources the master password from Keychain at boot. The wrapper at `~/.local/bin/agent-vault-launchd-runner` and plist at `~/Library/LaunchAgents/com.infisical.agent-vault.plist` are the canonical pair; check or restart with `launchctl print gui/$UID/com.infisical.agent-vault`.
+
+### How to use it
+
+```sh
+# Wrap any agent process — auto-sets HTTPS_PROXY + CA bundle env vars
+agent-vault vault run --vault personal -- <command>
+
+# e.g. let bun call Fathom; broker injects FATHOM_API_KEY:
+agent-vault vault run --vault personal -- bun -e '
+  const r = await fetch("https://api.usefathom.com/v1/sites");
+  console.log(r.status, await r.json());
+'
+```
+
+### Adding a new service + credential
+
+**One-shot wrapper** (~/.local/bin/av-add, local-only): `av-add <service-name> <host> <key-name> <keychain-source>` runs the admin step + member step + verify in one call. Example: `av-add resend api.resend.com RESEND_API_KEY resend-api-key`. Optional `AV_VAULT` and `AV_AUTH_TYPE` env vars override defaults.
+
+Manual two-identity dance (admin defines the shape, member writes the value):
+
+```sh
+# 1. Admin (your CLI session) — define the service in the vault
+export AGENT_VAULT_TOKEN=$(agent-vault vault token --vault personal)
+export AGENT_VAULT_ADDR=http://localhost:14321
+export AGENT_VAULT_VAULT=personal
+agent-vault catalog                          # browse built-in templates first
+agent-vault vault service add \
+  --name <slug> --host <api.example.com> \
+  --auth-type bearer --token-key <KEY_NAME>
+
+# 2. Member (the vault-writer-v2 agent identity) — set the value
+AGENT_VAULT_TOKEN=$(secret get agent-vault-writer-token) \
+AGENT_VAULT_ADDR=http://localhost:14321 \
+AGENT_VAULT_VAULT=personal \
+  agent-vault vault credential set <KEY_NAME>="$(secret get <keychain-source>)"
+
+# 3. Verify
+agent-vault vault discover
+```
+
+### v0.20.1-specific gotchas
+
+- **Role split is mutually exclusive.** Vault roles are `admin` (manages structure) XOR `member` (writes credentials). The instance owner is auto-admin and **cannot directly write credentials** — "Member role required" is the error. Newer versions add `agent-vault agent create <name>` which mints a member-role identity in one shot; **0.20.1 lacks this** and requires the invite-redeem dance below.
+
+- **Invite redemption is HTTP-only in 0.20.1**, no CLI command. Pattern:
+  ```sh
+  INVITE=$(agent-vault agent invite <name> --role member --vault personal:member --token-only)
+  curl -sS -X POST -H "Content-Type: application/json" \
+    -d "{\"name\":\"<name>\"}" \
+    "http://127.0.0.1:14321/invite/$INVITE" | jq -r .av_agent_token | secret put <name>-token
+  ```
+  Invite TTL is **15 minutes** — redeem immediately. `agent info <name>` returns "Agent not found" until redemption.
+
+- **macOS system curl (`/usr/bin/curl`) uses Secure Transport** and ignores `CURL_CA_BUNDLE` / `--cacert`. Use bun, node, python's `requests`/`httpx` (urllib has poor HTTPS-proxy support — avoid), or `brew install curl`. `vault run` correctly sets `SSL_CERT_FILE` / `NODE_EXTRA_CA_CERTS` / `REQUESTS_CA_BUNDLE` etc. — pick a client that reads them.
+
+- **Server log only records errors at default level.** Start with `--log-level debug` to see per-request injection. Verification baseline: positive control (call through `vault run` returns vendor data) + negative control (same call without the wrapper redirects to login / returns 401) = ironclad proof of injection.
+
+- **Web UI at `http://127.0.0.1:14321/`** handles only user invites, not agent invites. Don't try to redeem an `av_inv_` token there — it 404s.
+
 ## Pushing to Cloudflare Workers
 
 The default workflow is **stage-then-promote**: stage every new secret value onto a fresh worker version with `wrangler versions secret put`, then promote that version with one `wrangler versions deploy` at the end. The legacy `wrangler secret put` mutates the currently deployed version directly and is fragile when CI uploads versions without deploying them.
@@ -218,25 +302,13 @@ security delete-generic-password -s "<service>" -a "<account>"
 
 ## Sandbox detection (Claude Desktop, web/Cowork, container CI)
 
-The `secret` wrapper requires the user's local macOS Keychain. Sandboxed surfaces — Claude Desktop, Claude Code on web/Cowork, sandboxed CI, any container that doesn't mount `$HOME` — **cannot reach it**.
-
-**Pre-check before the first credential-bearing step:**
+Sandboxed surfaces can't reach the local Keychain. Pre-check before the first credential-bearing step:
 
 ```sh
 [ -x ~/.local/bin/secret ] || echo "SANDBOX: secret wrapper unreachable"
 ```
 
-If the check trips, do **not**:
-
-- Retry, hope, or fall back to a different store.
-- Ask the user to paste the credential into chat. Chat transcripts persist, get screenshotted, and end up in eval datasets. Pasted secrets must be rotated.
-- Improvise an alternate flow that skips authentication.
-
-Instead:
-
-1. **Name the exact secret needed** — e.g. "I need `secret get cloudflare-api-token` to push the worker."
-2. **Offer two paths**: (a) the user elevates permissions / mounts `$HOME` and you rerun, or (b) the user runs the gated step locally and reports back the result (status code, output without the token).
-3. **If neither is feasible, mark the work as blocked.** Better a clear stop than a half-deployed worker with a bad token.
+If it trips: name the exact secret needed (`secret get <name>`), offer to either let the user run the gated step locally and report status, or mark the work blocked. **Never** ask the user to paste the credential into chat — transcripts persist, get screenshotted, end up in eval datasets, pasted secrets must be rotated. Never improvise an alternate flow that skips authentication.
 
 ## Working with the auto-mode classifier
 
