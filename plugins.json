@@ -61,6 +61,12 @@
       "source": "mattpocock/skills",
       "description": "Organize GitHub issues; transform backlog ideas into actionable tasks (Matt Pocock)",
       "install": "npx skills add mattpocock/skills -g -a claude-code -s triage -y"
+    },
+    {
+      "name": "handoff",
+      "source": "mattpocock/skills",
+      "description": "Compact the current conversation into a handoff document for another agent to pick up (Matt Pocock)",
+      "install": "npx skills add mattpocock/skills -g -a claude-code -s handoff -y"
     }
   ]
 }
