@@ -29,14 +29,10 @@ If a rule emerges that needs detail (templates, checklists, protocols), prefer a
 git clone <repo-url> ~/.agents-config
 cd ~/.agents-config
 
-# Sync to IDE directories (dry-run first)
-python3 sync-to-ides.py --dry-run
-
-# Apply changes
-python3 sync-to-ides.py
-
-# Or use setup script
-./setup.sh
+# One command: sync symlinks + install/update all skills to latest upstream
+# (preview first with --dry-run)
+./sync.sh --dry-run
+./sync.sh
 ```
 
 ## Structure
@@ -95,10 +91,10 @@ python3 sync-to-ides.py --verify
 External skills and plugins are tracked in `plugins.json` but **not stored in this repo**. This keeps the repo lean while making setup reproducible.
 
 - `plugins.json` — registry of skills/plugins to install (name, source, install command)
-- `setup.sh` — installs them interactively during setup
+- `sync.sh` — non-interactive; syncs symlinks, installs every listed skill, then updates all installed skills to their latest upstream versions
 - Skills/plugins live in the agent-specific directories managed by their installer, such as `~/.claude/skills/` for Claude Code skills
 
-To add a skill or plugin, add an entry to `plugins.json` and re-run `./setup.sh`. Use `npx skills add ... -s <skill-name>` when an upstream repository contains multiple skills and only one should be installed.
+To add a skill or plugin, add an entry to `plugins.json` and re-run `./sync.sh` — re-running also pulls the latest upstream version of everything already installed. Use `npx skills add ... -s <skill-name>` when an upstream repository contains multiple skills and only one should be installed.
 
 ## IDE-Specific Notes
 
